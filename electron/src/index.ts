@@ -1,4 +1,5 @@
 import type { CapacitorElectronConfig } from '@capacitor-community/electron';
+import electronReload from 'electron-reload'
 import { getCapacitorElectronConfig, setupElectronDeepLinking } from '@capacitor-community/electron';
 import type { MenuItemConstructorOptions } from 'electron';
 import { app, MenuItem } from 'electron';
@@ -10,6 +11,7 @@ import { ElectronCapacitorApp, setupContentSecurityPolicy, setupReloadWatcher } 
 
 // Graceful handling of unhandled errors.
 unhandled();
+electronReload(`*`,{ignored: /node_modules|[/\\]\./})
 
 // Define our menu templates (these are optional)
 const trayMenuTemplate: (MenuItemConstructorOptions | MenuItem)[] = [new MenuItem({ label: 'Quit App', role: 'quit' })];

@@ -5,6 +5,8 @@ const config: CapacitorConfig = {
   appName: 'LedFx Client',
   webDir: 'dist',
   server: {
+    "url": "http://192.168.1.236:5173",
+    "cleartext": true,
     androidScheme: 'https'
   }
 };
