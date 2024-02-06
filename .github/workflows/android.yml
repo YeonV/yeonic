@@ -155,7 +155,10 @@ jobs:
     name: Build Desktop
     needs: buildapk
     if: startsWith(github.event.head_commit.message, 'Release') || startsWith(github.event.head_commit.message, 'Build')
-    runs-on: [ubuntu-latest, windows-latest, macos-latest, macos-14]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest, macos-14]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
