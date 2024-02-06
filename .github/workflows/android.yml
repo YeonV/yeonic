@@ -22,6 +22,8 @@ jobs:
     if: startsWith(github.event.head_commit.message, 'Release') || startsWith(github.event.head_commit.message, 'Build')
     permissions: write-all
     runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
@@ -121,6 +123,9 @@ jobs:
           draft: false
           prerelease: true
 
+      - name: Save Upload URL
+        id: upload_url
+        run: echo "hasNextVersion=${{ steps.get_next_version.outputs.hasNextVersion }}" >> $GITHUB_OUTPUT
       # - name: Upload Android-APK to Release
       #   if: startsWith(github.event.head_commit.message, 'Release') || github.event.inputs.release == 'Yes'
       #   uses: YeonV/upload-release-asset@v1
@@ -145,6 +150,7 @@ jobs:
 
   builddesktop:
     name: Build Desktop
+    needs: buildapk
     if: startsWith(github.event.head_commit.message, 'Release') || startsWith(github.event.head_commit.message, 'Build')
     runs-on: macos-14
     steps:
@@ -170,9 +176,9 @@ jobs:
 
       - name: Build electron app
         run: |
-        npx --yes cap sync @capacitor-community/electron
-        cd electron
-        npx --yes electron-builder build -c ./electron-builder.config.json
+          npx --yes cap sync @capacitor-community/electron
+          cd electron
+          npx --yes electron-builder build -c ./electron-builder.config.json
 
       - name: Upload Binary to Release
         if: startsWith(github.event.head_commit.message, 'Release') || github.event.inputs.release == 'Yes'
@@ -180,8 +186,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ needs.buildapk.outputs.upload_url }}
           asset_path: ./electron/dist/yeonic-${{ steps.package-version.outputs.current-version }}-arm64.dmg
           asset_name: yeonic-${{ steps.package-version.outputs.current-version }}-arm64.dmg
           asset_content_type: application/octet-stream
-
