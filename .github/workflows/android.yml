@@ -5,7 +5,7 @@ on:
     inputs:
       release:
         description: 'Create Release'
-        default: 'Yes'
+        default: 'No'
         required: false
         type: choice
         options:
@@ -175,7 +175,9 @@ jobs:
         run: |
           npx --yes cap sync @capacitor-community/electron
           cd electron
-          npx --yes electron-builder build -c ./electron-builder.config.json
+          npm i
+          npm i electron-builder
+          electron-builder build -c ./electron-builder.config.json
 
       - name: Upload Binary to Release
         if: startsWith(github.event.head_commit.message, 'Release') || github.event.inputs.release == 'Yes'
@@ -187,3 +189,11 @@ jobs:
           asset_path: ./electron/dist/yeonic-${{ needs.buildapk.outputs.version }}-arm64.dmg
           asset_name: yeonic-${{ needs.buildapk.outputs.version }}-arm64.dmg
           asset_content_type: application/octet-stream
+
+      - name: Upload Binary to Workflow
+        if: startsWith(github.event.head_commit.message, 'Release') != true && github.event.inputs.release == 'No'
+        uses: actions/upload-artifact@v3
+        with:
+          name: yeonic-${{ needs.buildapk.outputs.version }}-arm64
+          path: ./electron/dist/yeonic-${{ needs.buildapk.outputs.version }}-arm64.dmg
+          retention-days: 60
