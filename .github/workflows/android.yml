@@ -25,6 +25,22 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: main
+          fetch-depth: 0
+
+      - name: Get commit-messages
+        id: get_messages
+        run: |
+          git log --pretty=format:"+ %s [\![by](https://img.shields.io/badge/by-$(echo '%an' | sed 's/ /_/g')-blue.svg?logo=github&logoColor=white)](https://github.com/YeonV/LedFx-Frontend-v2/commit/%h)" $(git describe --tags --abbrev=0 @^)..@ | grep -v -E '(cleanup|Update)' | awk '{ sub(/\[\[!\]\]/, ""); msg = substr($0, 1, index($0, "[!") - 1); if (length(msg) >= 5 && !seen[msg]++) { print $0 } }' | awk '{ while (match($0, /https:\/\/img\.shields\.io\/badge\/by-[^"]*-blue\.svg\?logo=github&logoColor=white/)) { url = substr($0, RSTART, RLENGTH); gsub(" ", "_", url); printf "%s%s", substr($0, 1, RSTART - 1), url; $0 = substr($0, RSTART + RLENGTH) } gsub(" ", "_", $0); print }' >> /tmp/messages.txt
+          cp /tmp/messages.txt .messages.md
+          cat /tmp/messages.txt
+          echo 'MESSAGES<<EOF' >> $GITHUB_ENV
+          printf '%b\n' "$(cat /tmp/messages.txt)" >> $GITHUB_ENV
+          echo EOF >> $GITHUB_ENV
+          fetch-depth: 0
+
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
 
       - name: Setup java
         uses: actions/setup-java@v3
@@ -73,7 +89,7 @@ jobs:
         if: (startsWith(github.event.head_commit.message, 'Release') != true) || github.event.inputs.release == 'No'
         uses: actions/upload-artifact@v3
         with:
-          name: yeonic
+          name: yeonic-${{ steps.package-version.outputs.current-version}}
           path: ./android/app/build/outputs/bundle/release/app-release-signed.aab
           retention-days: 60
 
@@ -81,14 +97,9 @@ jobs:
         if: (startsWith(github.event.head_commit.message, 'Release') != true) || github.event.inputs.release == 'No'
         uses: actions/upload-artifact@v3
         with:
-          name: yeonic-debug
+          name: yeonic-${{ steps.package-version.outputs.current-version}}-debug
           path: ./android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 60
-
-      - name: Set Tag
-        if: startsWith(github.event.head_commit.message, 'Release') || github.event.inputs.release == 'Yes'
-        id: current-datetime
-        run: echo "CURRENT_DATETIME=$(date +'%Y-%m-%d-%H_%M_%S%z')" >> "$GITHUB_OUTPUT"
 
       - name: Create Release
         if: startsWith(github.event.head_commit.message, 'Release') || github.event.inputs.release == 'Yes'
@@ -97,9 +108,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.current-datetime.outputs.CURRENT_DATETIME }}
-          release_name: Release ${{ steps.current-datetime.outputs.CURRENT_DATETIME }}
-          body: ${{ steps.current-datetime.outputs.CURRENT_DATETIME }}
+          tag_name: ${{ steps.package-version.outputs.current-version}}
+          release_name: Release ${{ steps.package-version.outputs.current-version}}
+          body: |
+            ${{ env.MESSAGES }}
           draft: false
           prerelease: true
 
