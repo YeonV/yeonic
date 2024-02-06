@@ -45,7 +45,7 @@ function App() {
       },
       (res) => {
         console.log('watch', res)
-        setZeroconfLog(zeroconfLog + JSON.stringify(res))
+        setZeroconfLog((z) => z + JSON.stringify(res))
       }
     )
   }, [])
