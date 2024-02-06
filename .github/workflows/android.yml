@@ -24,6 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
+      version: ${{ steps.package-version.outputs.current-version }}
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
@@ -121,7 +122,7 @@ jobs:
           body: |
             ${{ env.MESSAGES || 'New Relase' }}
           draft: false
-          prerelease: true
+          prerelease: false
 
       - name: Save Upload URL
         id: upload_url
@@ -164,10 +165,6 @@ jobs:
         with:
           node-version: 20.x
 
-      - name: get-npm-version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@master
-
       - name: install dependencies
         run: npm ci
 
@@ -187,6 +184,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.buildapk.outputs.upload_url }}
-          asset_path: ./electron/dist/yeonic-${{ steps.package-version.outputs.current-version }}-arm64.dmg
-          asset_name: yeonic-${{ steps.package-version.outputs.current-version }}-arm64.dmg
+          asset_path: ./electron/dist/yeonic-${{ needs.buildapk.outputs.version }}-arm64.dmg
+          asset_name: yeonic-${{ needs.buildapk.outputs.version }}-arm64.dmg
           asset_content_type: application/octet-stream
