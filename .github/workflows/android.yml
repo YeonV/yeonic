@@ -73,6 +73,8 @@ jobs:
       - name: Generate icons and splash screen to android folder
         run: if [ -d "./resources" ]; then npm install @capacitor/assets --save-dev && npx capacitor-assets generate --android; fi
 
+      - name: Set Version
+        run: npx capacitor-set-version . -v ${{ steps.package-version.outputs.current-version }} -b ${{ github.run_number }} --json
       - name: Build app bundle
         run: cd android && ./gradlew bundle && ./gradlew assembleDebug
 
