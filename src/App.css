@@ -4,7 +4,15 @@
   flex-grow: 1;
   width: 100%;
 }
+
 main {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: space-between;
+}
+
+.content {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -14,4 +22,3 @@ main {
   flex-grow: 1;
   justify-content: space-between;
 }
-
