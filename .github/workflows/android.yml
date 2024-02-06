@@ -63,7 +63,7 @@ jobs:
           draft: false
           prerelease: false
 
-  buildapk:
+  buildmobile:
     needs: prepare
     if: startsWith(github.event.head_commit.message, 'Release') || startsWith(github.event.head_commit.message, 'Build')
     permissions: write-all
@@ -203,15 +203,16 @@ jobs:
       - name: install dependencies
         run: npm ci
 
-      - name: Create Build Folder
+      - name: Build Web App
         run: npm run build
 
-      - name: Build electron app
+      - name: Build Electron app
         run: |
           npx --yes cap sync @capacitor-community/electron
           cd electron
-          npm i
-          npx --yes electron-builder build -c ./electron-builder.config.json
+          npm ci
+          npm run build && electron-builder build -c ./electron-builder.config.json
+          cd ..
 
       - name: Upload Binary to Release
         if: startsWith(github.event.head_commit.message, 'Release') || github.event.inputs.release == 'Yes'
