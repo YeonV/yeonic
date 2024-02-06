@@ -29,6 +29,7 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v3
         with:
+          repository: YeonV/yeonic
           ref: main
           fetch-depth: 0
 
@@ -44,10 +45,6 @@ jobs:
           printf '%b\n' "$(cat /tmp/messages.txt)" >> $GITHUB_ENV
           echo EOF >> $GITHUB_ENV
           fetch-depth: 0
-
-      - name: get-npm-version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@master
 
       - name: Setup java
         uses: actions/setup-java@v3
@@ -72,14 +69,19 @@ jobs:
       - name: Capacitor update
         run: npx cap update
 
-      - name: Capacitor copy
-        run: npx cap copy
+      - name: Capacitor sync
+        run: npx cap sync
 
       - name: Generate icons and splash screen to android folder
         run: if [ -d "./resources" ]; then npm install @capacitor/assets --save-dev && npx capacitor-assets generate --android; fi
 
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+
       - name: Set Version
         run: npx capacitor-set-version . -v ${{ steps.package-version.outputs.current-version }} -b ${{ github.run_number }} --json
+
       - name: Build app bundle
         run: cd android && ./gradlew bundle && ./gradlew assembleDebug
 
