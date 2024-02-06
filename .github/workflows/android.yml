@@ -17,7 +17,7 @@ on:
       - main
 
 jobs:
-  buildapk:
+  prepare:
     name: Build APK
     if: startsWith(github.event.head_commit.message, 'Release') || startsWith(github.event.head_commit.message, 'Build')
     permissions: write-all
@@ -44,7 +44,37 @@ jobs:
           echo 'MESSAGES<<EOF' >> $GITHUB_ENV
           printf '%b\n' "$(cat /tmp/messages.txt)" >> $GITHUB_ENV
           echo EOF >> $GITHUB_ENV
-          fetch-depth: 0
+
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+
+      - name: Create Release
+        if: startsWith(github.event.head_commit.message, 'Release') || github.event.inputs.release == 'Yes'
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.package-version.outputs.current-version }}
+          release_name: Release ${{ steps.package-version.outputs.current-version }}
+          body: |
+            ${{ env.MESSAGES || 'New Relase' }}
+          draft: false
+          prerelease: false
+
+  buildapk:
+    name: Build APK
+    needs: prepare
+    if: startsWith(github.event.head_commit.message, 'Release') || startsWith(github.event.head_commit.message, 'Build')
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+        with:
+          repository: YeonV/yeonic
+          ref: main
 
       - name: Setup java
         uses: actions/setup-java@v3
@@ -75,12 +105,8 @@ jobs:
       - name: Generate icons and splash screen to android folder
         run: if [ -d "./resources" ]; then npm install @capacitor/assets --save-dev && npx capacitor-assets generate --android; fi
 
-      - name: get-npm-version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@master
-
       - name: Set Version
-        run: npx capacitor-set-version . -v ${{ steps.package-version.outputs.current-version }} -b ${{ github.run_number }} --json
+        run: npx capacitor-set-version . -v ${{ needs.prepare.outputs.version }} -b ${{ github.run_number }} --json
 
       - name: Build app bundle
         run: cd android && ./gradlew bundle && ./gradlew assembleDebug
@@ -100,7 +126,7 @@ jobs:
         if: (startsWith(github.event.head_commit.message, 'Release') != true) || github.event.inputs.release == 'No'
         uses: actions/upload-artifact@v3
         with:
-          name: yeonic-${{ steps.package-version.outputs.current-version}}
+          name: yeonic-${{ needs.prepare.outputs.version }}
           path: ./android/app/build/outputs/bundle/release/app-release-signed.aab
           retention-days: 60
 
@@ -108,37 +134,9 @@ jobs:
         if: (startsWith(github.event.head_commit.message, 'Release') != true) || github.event.inputs.release == 'No'
         uses: actions/upload-artifact@v3
         with:
-          name: yeonic-${{ steps.package-version.outputs.current-version}}-debug
+          name: yeonic-${{ needs.prepare.outputs.version }}-debug
           path: ./android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 60
-
-      - name: Create Release
-        if: startsWith(github.event.head_commit.message, 'Release') || github.event.inputs.release == 'Yes'
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.package-version.outputs.current-version}}
-          release_name: Release ${{ steps.package-version.outputs.current-version}}
-          body: |
-            ${{ env.MESSAGES || 'New Relase' }}
-          draft: false
-          prerelease: false
-
-      - name: Save Upload URL
-        id: upload_url
-        run: echo "hasNextVersion=${{ steps.get_next_version.outputs.hasNextVersion }}" >> $GITHUB_OUTPUT
-      # - name: Upload Android-APK to Release
-      #   if: startsWith(github.event.head_commit.message, 'Release') || github.event.inputs.release == 'Yes'
-      #   uses: YeonV/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./android/app/build/outputs/bundle/release/app-release-signed.aab
-      #     asset_name: yeonic.apk
-      #     asset_content_type: application/vnd.android.package-archive
 
       - name: Upload Android-APK to Release
         if: startsWith(github.event.head_commit.message, 'Release') || github.event.inputs.release == 'Yes'
@@ -146,18 +144,28 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ needs.prepare.outputs.upload_url }}
           asset_path: ./android/app/build/outputs/apk/debug/app-debug.apk
-          asset_name: yeonic-${{ steps.package-version.outputs.current-version}}--android.apk
+          asset_name: yeonic-${{ needs.prepare.outputs.version }}--android.apk
           asset_content_type: application/vnd.android.package-archive
 
   builddesktop:
     name: Build Desktop
-    needs: buildapk
+    needs: prepare
+    continue-on-error: true
     if: startsWith(github.event.head_commit.message, 'Release') || startsWith(github.event.head_commit.message, 'Build')
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest, macos-14]
+        include:
+          - os: ubuntu-latest
+            postfix: arm64
+          - os: windows-latest
+            postfix: win-setup.exe
+          - os: macos-latest
+            postfix: osx-x64.dmg
+          - os: macos-14
+            postfix: osx-arm64.dmg
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout source
@@ -181,8 +189,7 @@ jobs:
           npx --yes cap sync @capacitor-community/electron
           cd electron
           npm i
-          npm i electron-builder
-          electron-builder build -c ./electron-builder.config.json
+          npx --yes electron-builder build -c ./electron-builder.config.json
 
       - name: Upload Binary to Release
         if: startsWith(github.event.head_commit.message, 'Release') || github.event.inputs.release == 'Yes'
@@ -190,15 +197,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.buildapk.outputs.upload_url }}
-          asset_path: ./electron/dist/yeonic-${{ needs.buildapk.outputs.version }}-arm64.dmg
-          asset_name: yeonic-${{ needs.buildapk.outputs.version }}-arm64.dmg
+          upload_url: ${{ needs.prepare.outputs.upload_url }}
+          asset_path: ./electron/dist/yeonic-${{ needs.prepare.outputs.version }}-${{ matrix.postfix }}
+          asset_name: yeonic-${{ needs.prepare.outputs.version }}-${{ matrix.postfix }}
           asset_content_type: application/octet-stream
 
       - name: Upload Binary to Workflow
         if: startsWith(github.event.head_commit.message, 'Release') != true && github.event.inputs.release == 'No'
         uses: actions/upload-artifact@v3
         with:
-          name: yeonic-${{ needs.buildapk.outputs.version }}-arm64
-          path: ./electron/dist/yeonic-${{ needs.buildapk.outputs.version }}-arm64.dmg
+          name: yeonic-${{ needs.prepare.outputs.version }}-arm64
+          path: ./electron/dist/yeonic-${{ needs.prepare.outputs.version }}-${{ matrix.postfix }}
           retention-days: 60

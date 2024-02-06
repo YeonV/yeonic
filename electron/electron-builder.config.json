@@ -12,7 +12,8 @@
   "nsis": {
     "allowElevation": true,
     "oneClick": false,
-    "allowToChangeInstallationDirectory": true
+    "allowToChangeInstallationDirectory": true,
+    "artifactName": "yeonic-${version}-win-setup.exe"
   },
   "win": {
     "target": "nsis",
@@ -29,21 +30,28 @@
   "dmg": {
     "background": "assets/DMG_BG.jpg",
     "contents": [
-        {
-            "x": 135,
-            "y": 178
-        },
-        {
-            "x": 407,
-            "y": 178,
-            "type": "link",
-            "path": "/Applications"
-        }
+      {
+        "x": 135,
+        "y": 178
+      },
+      {
+        "x": 407,
+        "y": 178,
+        "type": "link",
+        "path": "/Applications"
+      }
     ],
     "iconSize": 100,
     "iconTextSize": 14,
     "window": {
-        "height": 380
+      "height": 380
     }
+  },
+  "linux": {
+    "target": [
+      "AppImage",
+      "snap"
+    ],
+    "artifactName": "yeonic-${version}-${os}.${ext}"
   }
 }
