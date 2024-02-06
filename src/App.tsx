@@ -5,10 +5,22 @@ import { Device, DeviceInfo } from '@capacitor/device'
 import { Button, Card, CardContent, List, ListItem, Stack, ThemeProvider, Typography, createTheme, useMediaQuery } from '@mui/material'
 import { useBearStore } from './store/useStore'
 import { ZeroConf } from 'capacitor-zeroconf'
+import { repository } from '../package.json'
+import Releases from './components/Releases'
 
 const logDeviceInfo = async () => await Device.getInfo()
-
+export type ReleaseType = {
+  name: string
+  assets: {
+    browser_download_url: string
+    name: string
+  }[]
+  tag_name: string
+  prerelease: boolean
+}
 function App() {
+  const [releases, setReleases] = useState<ReleaseType[]>([])
+
   const bears = useBearStore((state) => state.bears)
   const setBears = useBearStore((state) => state.setBears)
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
@@ -35,7 +47,7 @@ function App() {
 
   useEffect(() => {
     logDeviceInfo().then((i) => {
-      console.log('Device info:', i)
+      // console.log('Device info:', i)
       setInfo(i)
     })
     ZeroConf.watch(
@@ -50,6 +62,18 @@ function App() {
     )
   }, [])
 
+  useEffect(() => {
+    const get = async () => {
+      const res = await fetch(`https://api.github.com/repos/${repository.url.replace('https://github.com/', '')}/releases`)
+      const rel: ReleaseType[] = await res.json()
+      // console.log(releases_with_pre)
+      // const releases: ReleaseType[] = releases_with_pre.filter((r: ReleaseType) => r.prerelease === false)
+      setReleases(rel)
+    }
+    get()
+  }, [])
+
+  
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   const subline = (window as any).Capacitor.isNative ? `native app on ${info.operatingSystem}` : `${info.operatingSystem} on web`
 
@@ -89,6 +113,8 @@ function App() {
               <Typography>{zeroconfLog}</Typography>
             </CardContent>
           </Card>
+
+          <Releases releases={releases} />
           <Stack direction={'row'} justifyContent={'center'} spacing={2}>
             <Button variant='contained' onClick={() => setBears(bears + 1)}>
               bears is {bears}

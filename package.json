@@ -3,6 +3,15 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
+  "author": {
+    "name": "YeonV aka Blade",
+    "email": "dev@yeonv.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YeonV/yeonic"
+  },
   "scripts": {
     "dev": "vite --host",
     "build": "tsc && vite build",

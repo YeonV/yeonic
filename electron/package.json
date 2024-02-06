@@ -1,16 +1,16 @@
 {
-  "name": "LedFx Client",
-  "version": "1.0.0",
+  "name": "yeonic",
+  "version": "0.0.1",
   "description": "An Amazing Capacitor App",
   "author": {
-    "name": "",
-    "email": ""
-  },
-  "repository": {
-    "type": "git",
-    "url": ""
+    "name": "YeonV aka Blade",
+    "email": "dev@yeonv.com"
   },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YeonV/yeonic"
+  },
   "main": "build/src/index.js",
   "scripts": {
     "build": "tsc && electron-rebuild",
