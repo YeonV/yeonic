@@ -1,0 +1,12 @@
+{
+	"appId": "com.blade.ledfx",
+	"appName": "LedFx Client",
+	"webDir": "dist",
+	"server": {
+		"cleartext": true,
+		"androidScheme": "https"
+	},
+	"plugins": {
+		"ZeroConf": {}
+	}
+}
