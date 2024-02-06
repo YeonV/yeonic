@@ -2,6 +2,16 @@ name: Build Android
 run-name: Creating Production Ready Android App 🚀
 on:
   workflow_dispatch:
+    inputs:
+      release:
+        description: 'Create Release'
+        default: 'Yes'
+        required: false
+        type: choice
+        options:
+          - 'Yes'
+          - 'No'
+
   push:
     branches:
       - main
@@ -10,14 +20,9 @@ jobs:
   build:
     name: Build APK
     runs-on: ubuntu-latest
-    # TODO: add the default directory - COMMENT IF IT'S NOT IN SUBFOLDER
-    # defaults:
-    #   run:
-    #     working-directory: ./frontend
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
-        # TODO: add your branch to checkout
         with:
           ref: main
 
@@ -47,7 +52,6 @@ jobs:
       - name: Capacitor copy
         run: npx cap copy
 
-      # TODO: Check for folder structure in README for generating splash screen
       - name: Generate icons and splash screen to android folder
         run: if [ -d "./resources" ]; then npm install @capacitor/assets --save-dev && npx capacitor-assets generate --android; fi
 
@@ -66,22 +70,57 @@ jobs:
         run: ls ./android/app/build/outputs/bundle/release
 
       - name: Upload release bundle
+        if: (startsWith(github.event.head_commit.message, 'Release') != true) || github.event.inputs.release == 'No'
         uses: actions/upload-artifact@v3
         with:
-          name: app-release
+          name: yeonic
           path: ./android/app/build/outputs/bundle/release/app-release-signed.aab
           retention-days: 60
 
+      - name: Upload debug bundle
+        if: (startsWith(github.event.head_commit.message, 'Release') != true) || github.event.inputs.release == 'No'
+        uses: actions/upload-artifact@v3
+        with:
+          name: yeonic-debug
+          path: ./android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 60
+
       - name: Set Tag
+        if: startsWith(github.event.head_commit.message, 'Release') || github.event.inputs.release == 'Yes'
         id: current-datetime
         run: echo "CURRENT_DATETIME=$(date +'%Y-%m-%d-%H_%M_%S%z')" >> "$GITHUB_OUTPUT"
 
-      - name: Build Release
-        shell: bash
-        run: |
-          hub release create ${{ steps.current-datetime.outputs.CURRENT_DATETIME }} \
-          -m ${{ steps.current-datetime.outputs.CURRENT_DATETIME }} \
-          -a ./android/app/build/outputs/bundle/release/app-release-signed.aab \
-          -a ./android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Create Release
+        if: startsWith(github.event.head_commit.message, 'Release') || github.event.inputs.release == 'Yes'
+        id: create_release
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.current-datetime.outputs.CURRENT_DATETIME }}
+          release_name: Release ${{ steps.current-datetime.outputs.CURRENT_DATETIME }}
+          body: ${{ steps.current-datetime.outputs.CURRENT_DATETIME }}
+          draft: false
+          prerelease: true
+
+      - name: Upload Android-APK to Release
+        if: startsWith(github.event.head_commit.message, 'Release') || github.event.inputs.release == 'Yes'
+        uses: YeonV/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./android/app/build/outputs/bundle/release/app-release-signed.aab
+          asset_name: yeonic.apk
+          asset_content_type: application/vnd.android.package-archive
+
+      - name: Upload Debug-Android-APK to Release
+        if: startsWith(github.event.head_commit.message, 'Release') || github.event.inputs.release == 'Yes'
+        uses: YeonV/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./android/app/build/outputs/apk/debug/app-debug.apk
+          asset_name: yeonic-debug.apk
+          asset_content_type: application/vnd.android.package-archive
