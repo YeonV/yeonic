@@ -18,7 +18,7 @@ on:
 
 jobs:
   prepare:
-    name: Build APK
+    name: Prepare
     if: startsWith(github.event.head_commit.message, 'Release') || startsWith(github.event.head_commit.message, 'Build')
     permissions: write-all
     runs-on: ubuntu-latest
@@ -64,66 +64,88 @@ jobs:
           prerelease: false
 
   buildapk:
-    name: Build APK
     needs: prepare
     if: startsWith(github.event.head_commit.message, 'Release') || startsWith(github.event.head_commit.message, 'Build')
     permissions: write-all
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-14]
+        include:
+          - os: ubuntu-latest
+            target: Android-APK
+          - os: macos-14
+            target: iOS-IPA
+    runs-on: ${{ matrix.os }}
+    name: Build Mobile (${{ matrix.target }})
     steps:
       - name: Checkout source
+        if: startsWith(matrix.target, 'Android-APK')
         uses: actions/checkout@v3
         with:
           repository: YeonV/yeonic
           ref: main
 
       - name: Setup java
+        if: startsWith(matrix.target, 'Android-APK')
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '17'
 
       - name: Setup Node.js
+        if: startsWith(matrix.target, 'Android-APK')
         uses: actions/setup-node@v3
         with:
           node-version: 20.x
 
       - name: install dependencies
+        if: startsWith(matrix.target, 'Android-APK')
         run: npm ci
 
       - name: Create Build Folder
+        if: startsWith(matrix.target, 'Android-APK')
         run: npm run build
 
       - name: Add android folder if not present
+        if: startsWith(matrix.target, 'Android-APK')
         run: if [ ! -d "./android" ]; then npx cap add android; fi
 
       - name: Capacitor update
+        if: startsWith(matrix.target, 'Android-APK')
         run: npx cap update
 
       - name: Capacitor sync
+        if: startsWith(matrix.target, 'Android-APK')
         run: npx cap sync
 
       - name: Generate icons and splash screen to android folder
+        if: startsWith(matrix.target, 'Android-APK')
         run: if [ -d "./resources" ]; then npm install @capacitor/assets --save-dev && npx capacitor-assets generate --android; fi
 
       - name: Set Version
+        if: startsWith(matrix.target, 'Android-APK')
         run: npx capacitor-set-version . -v ${{ needs.prepare.outputs.version }} -b ${{ github.run_number }} --json
 
       - name: Build app bundle
+        if: startsWith(matrix.target, 'Android-APK')
         run: cd android && ./gradlew bundle && ./gradlew assembleDebug
 
       - name: Extract Android signing key from env
+        if: startsWith(matrix.target, 'Android-APK')
         run: |
           echo "${{ secrets.RELEASE_KEYSTORE }}" > android/release.jks.base64
           base64 -d android/release.jks.base64 > android/release.decrypted.jks
 
       - name: Sign dev build
+        if: startsWith(matrix.target, 'Android-APK')
         run: jarsigner -keystore android/release.decrypted.jks -storepass "${{ secrets.RELEASE_KEYSTORE_PASSWORD }}" -signedjar ./android/app/build/outputs/bundle/release/app-release-signed.aab ./android/app/build/outputs/bundle/release/app-release.aab blade
 
       - name: Check folder content of android output
+        if: startsWith(matrix.target, 'Android-APK')
         run: ls ./android/app/build/outputs/bundle/release
 
       - name: Upload release bundle
-        if: (startsWith(github.event.head_commit.message, 'Release') != true) || github.event.inputs.release == 'No'
+        if: startsWith(matrix.target, 'Android-APK') && ((startsWith(github.event.head_commit.message, 'Release') != true) || github.event.inputs.release == 'No')
         uses: actions/upload-artifact@v3
         with:
           name: yeonic-${{ needs.prepare.outputs.version }}
@@ -131,7 +153,7 @@ jobs:
           retention-days: 60
 
       - name: Upload debug bundle
-        if: (startsWith(github.event.head_commit.message, 'Release') != true) || github.event.inputs.release == 'No'
+        if: startsWith(matrix.target, 'Android-APK') && ((startsWith(github.event.head_commit.message, 'Release') != true) || github.event.inputs.release == 'No')
         uses: actions/upload-artifact@v3
         with:
           name: yeonic-${{ needs.prepare.outputs.version }}-debug
@@ -139,7 +161,7 @@ jobs:
           retention-days: 60
 
       - name: Upload Android-APK to Release
-        if: startsWith(github.event.head_commit.message, 'Release') || github.event.inputs.release == 'Yes'
+        if: startsWith(matrix.target, 'Android-APK') && ((startsWith(github.event.head_commit.message, 'Release') != true) || github.event.inputs.release == 'No')
         uses: YeonV/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
