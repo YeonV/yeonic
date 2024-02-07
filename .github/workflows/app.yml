@@ -211,6 +211,7 @@ jobs:
         run: npm run build
 
       - name: Set Version
+        continue-on-error: true
         run: npm version ${{ needs.prepare.outputs.version }}
 
       - name: Build Electron app
