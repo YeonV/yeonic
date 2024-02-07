@@ -278,10 +278,10 @@ jobs:
       - name: Send Discord Release Post
         if: startsWith(matrix.os, 'ubuntu') && (github.event.inputs.release == 'Yes' || startsWith(github.event.head_commit.message, 'Release'))
         run: |
-          curl -H "Content-Type: application/json" -d '{"content": "**[DOWNLOAD]** <https://github.com/YeonV/yeonic/releases/tag/${{ env.action_state }}>\n\n**[PREVIEW]** <https://yeonv.github.io/yeonic/>"}' ${{ secrets.DISCORD_RELEASE_WEBHOOK }}
+          curl -H "Content-Type: application/json" -d '{"content": "**New Release ${{ needs.prepare.outputs.version }}**\n\n**[DOWNLOAD]** <https://github.com/YeonV/yeonic/releases/tag/${{ needs.prepare.outputs.version }}>\n\n**[PREVIEW]**     <https://yeonv.github.io/yeonic/>"}' ${{ secrets.DISCORD_RELEASE_WEBHOOK }}
 
       - name: Send Discord Beta Post
         if: startsWith(matrix.os, 'ubuntu') && (github.event.inputs.release == 'No' || startsWith(github.event.head_commit.message, 'Build'))
         run: |
           RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          curl -H "Content-Type: application/json" -d '{"content": "**[DOWNLOAD]** <'$RUN_URL'>\n\n**[PREVIEW]** <https://yeonv.github.io/yeonic/>"}' ${{ secrets.DISCORD_BETA_WEBHOOK }}
+          curl -H "Content-Type: application/json" -d '{"content": "**New Binaries**\n\n**[DOWNLOAD]** <'$RUN_URL'>\n\n**[PREVIEW]**     <https://yeonv.github.io/yeonic/>"}' ${{ secrets.DISCORD_BETA_WEBHOOK }}
