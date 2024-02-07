@@ -1,1 +1,0 @@
-import{W as t}from"./index-1TD19EPx.js";const n="The plugin is not available on this platform",r=Promise.reject(n);class a extends t{getHostname(){return r}register(e){return r}unregister(e){return r}stop(){return r}watch(e,o){return r}unwatch(e){return r}close(){return r}}export{a as ZeroConfWeb};
