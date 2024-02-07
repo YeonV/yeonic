@@ -16,13 +16,18 @@
     "artifactName": "yeonic-${version}-win-setup.exe"
   },
   "win": {
-    "target": "nsis",
-    "icon": "assets/appIcon.ico"
+    "target": [
+      "nsis",
+      "zip"
+    ],
+    "icon": "assets/appIcon.ico",
+    "artifactName": "yeonic-${version}-win-setup.exe"
   },
   "mac": {
     "category": "public.app-category.developer-tools",
     "target": [
-      "dmg"
+      "dmg",
+      "zip"
     ],
     "icon": "assets/appIcon.png"
   },

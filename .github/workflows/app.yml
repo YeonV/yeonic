@@ -160,7 +160,7 @@ jobs:
           retention-days: 60
 
       - name: Upload Android-APK to Release
-        if: startsWith(matrix.target, 'Android-APK') && ((startsWith(github.event.head_commit.message, 'Release') != true) || github.event.inputs.release == 'No')
+        if: startsWith(matrix.target, 'Android-APK') && ((startsWith(github.event.head_commit.message, 'Release') == true) || github.event.inputs.release == 'Yes')
         uses: YeonV/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -181,16 +181,20 @@ jobs:
         include:
           - os: ubuntu-latest
             title: Linux
-            postfix: linux.snap
+            postfix: -linux.snap
+            postfix2: -linux.AppImage
           - os: windows-latest
             title: Windows
-            postfix: win-setup.exe
+            postfix: -win-setup.exe
+            postfix2: -win.zip
           - os: macos-latest
             title: macOS
             postfix: .dmg
+            postfix2: .zip
           - os: macos-14
             title: macOS-M1
-            postfix: arm64.dmg
+            postfix: -arm64.dmg
+            postfix2: -arm64.zip
     runs-on: ${{ matrix.os }}
     name: Build Desktop (${{ matrix.title }})
     steps:
@@ -227,14 +231,33 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.prepare.outputs.upload_url }}
-          asset_path: ./electron/dist/yeonic-${{ needs.prepare.outputs.version }}-${{ matrix.postfix }}
-          asset_name: yeonic-${{ needs.prepare.outputs.version }}-${{ matrix.postfix }}
+          asset_path: ./electron/dist/yeonic-${{ needs.prepare.outputs.version }}${{ matrix.postfix }}
+          asset_name: yeonic-${{ needs.prepare.outputs.version }}${{ matrix.postfix }}
           asset_content_type: application/octet-stream
 
       - name: Upload Binary to Workflow
         if: startsWith(github.event.head_commit.message, 'Release') != true && github.event.inputs.release == 'No'
         uses: actions/upload-artifact@v3
         with:
-          name: yeonic-${{ needs.prepare.outputs.version }}-arm64
-          path: ./electron/dist/yeonic-${{ needs.prepare.outputs.version }}-${{ matrix.postfix }}
+          name: yeonic-${{ needs.prepare.outputs.version }}${{ matrix.postfix }}
+          path: ./electron/dist/yeonic-${{ needs.prepare.outputs.version }}${{ matrix.postfix }}
+          retention-days: 60
+
+      - name: Upload Binary 2 to Release
+        if: startsWith(github.event.head_commit.message, 'Release') || github.event.inputs.release == 'Yes'
+        uses: YeonV/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.prepare.outputs.upload_url }}
+          asset_path: ./electron/dist/yeonic-${{ needs.prepare.outputs.version }}${{ matrix.postfix2 }}
+          asset_name: yeonic-${{ needs.prepare.outputs.version }}${{ matrix.postfix2 }}
+          asset_content_type: application/octet-stream
+
+      - name: Upload Binary 2 to Workflow
+        if: startsWith(github.event.head_commit.message, 'Release') != true && github.event.inputs.release == 'No'
+        uses: actions/upload-artifact@v3
+        with:
+          name: yeonic-${{ needs.prepare.outputs.version }}${{ matrix.postfix2 }}
+          path: ./electron/dist/yeonic-${{ needs.prepare.outputs.version }}${{ matrix.postfix2 }}
           retention-days: 60
