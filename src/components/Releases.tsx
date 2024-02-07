@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Card, CardContent, Stack, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary,  Stack, Typography } from '@mui/material'
 import { ReleaseType } from '../App'
 import { Android, ExpandMore } from '@mui/icons-material'
 import Linux from './Os/Linux'
@@ -33,9 +33,11 @@ const Releases = ({ releases }: { releases: ReleaseType[] }) => {
   }
 
   return (
-    <Card>
-      <CardContent>
-        <Typography variant='h6'>Releases</Typography>
+      <Accordion elevation={1} sx={{ maxWidth: 550}}>
+            <AccordionSummary expandIcon={<ExpandMore />} sx={{ textAlign: 'center'}}>
+              All Releases
+            </AccordionSummary>
+            <AccordionDetails>
         {releases.map((r) => (
           <Accordion key={r.tag_name} elevation={3}>
             <AccordionSummary expandIcon={<ExpandMore />}>
@@ -58,8 +60,9 @@ const Releases = ({ releases }: { releases: ReleaseType[] }) => {
             </AccordionDetails>
           </Accordion>
         ))}
-      </CardContent>
-    </Card>
+
+</AccordionDetails>
+          </Accordion>
   )
 }
 
