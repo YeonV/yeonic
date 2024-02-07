@@ -150,7 +150,7 @@ jobs:
 
       - name: Upload release bundle
         if: startsWith(matrix.target, 'Android-APK') && ((startsWith(github.event.head_commit.message, 'Release') != true) || github.event.inputs.release == 'No')
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: yeonic-${{ needs.prepare.outputs.version }}-android
           path: ./android/app/build/outputs/bundle/release/app-release-signed.aab
@@ -158,7 +158,7 @@ jobs:
 
       - name: Upload debug bundle
         if: startsWith(matrix.target, 'Android-APK') && ((startsWith(github.event.head_commit.message, 'Release') != true) || github.event.inputs.release == 'No')
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: yeonic-${{ needs.prepare.outputs.version }}-android-debug
           path: ./android/app/build/outputs/apk/debug/app-debug.apk
@@ -217,7 +217,7 @@ jobs:
           ref: main
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20.x
 
@@ -250,7 +250,7 @@ jobs:
 
       - name: Upload Binary to Workflow
         if: startsWith(github.event.head_commit.message, 'Build') || github.event.inputs.release == 'No'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: yeonic-${{ needs.prepare.outputs.version }}${{ matrix.postfix }}
           path: ./electron/dist/yeonic-${{ needs.prepare.outputs.version }}${{ matrix.postfix }}
@@ -269,7 +269,7 @@ jobs:
 
       - name: Upload Binary 2 to Workflow
         if: startsWith(github.event.head_commit.message, 'Build') || github.event.inputs.release == 'No'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: yeonic-${{ needs.prepare.outputs.version }}${{ matrix.postfix2 }}
           path: ./electron/dist/yeonic-${{ needs.prepare.outputs.version }}${{ matrix.postfix2 }}

@@ -1,4 +1,4 @@
-package com.blade.ledfx;
+package com.blade.yeonic;
 
 import com.getcapacitor.BridgeActivity;
 

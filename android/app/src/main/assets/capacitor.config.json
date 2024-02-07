@@ -1,6 +1,6 @@
 {
-	"appId": "com.blade.ledfx",
-	"appName": "LedFx Client",
+	"appId": "com.blade.yeonic",
+	"appName": "yeonic",
 	"webDir": "dist",
 	"server": {
 		"cleartext": true,
