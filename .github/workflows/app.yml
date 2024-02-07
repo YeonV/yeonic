@@ -46,8 +46,13 @@ jobs:
 
       - name: get-npm-version
         id: package-version
-        uses: martinbeentjes/npm-get-version-action@1.3.1
+        # uses: martinbeentjes/npm-get-version-action@1.3.1
+        run: |
+          PACKAGE_JSON_PATH="${1-.}"
+          echo "Reading package.json from ${PACKAGE_JSON_PATH}/package.json"
+          PACKAGE_VERSION=$(cat ${PACKAGE_JSON_PATH}/package.json | jq '.version' | tr -d '"')
 
+          echo "current-version=${PACKAGE_VERSION}" >> $GITHUB_OUTPUT
       - name: Create Release
         if: startsWith(github.event.head_commit.message, 'Release') || github.event.inputs.release == 'Yes'
         id: create_release
