@@ -21,7 +21,7 @@
       "zip"
     ],
     "icon": "assets/appIcon.ico",
-    "artifactName": "yeonic-${version}-win-setup.exe"
+    "artifactName": "yeonic-${version}-win.zip"
   },
   "mac": {
     "category": "public.app-category.developer-tools",
