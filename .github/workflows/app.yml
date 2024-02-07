@@ -26,7 +26,7 @@ jobs:
       version: ${{ steps.package-version.outputs.current-version }}
     steps:
       - name: Checkout source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: YeonV/yeonic
           ref: main
@@ -46,7 +46,7 @@ jobs:
 
       - name: get-npm-version
         id: package-version
-        uses: martinbeentjes/npm-get-version-action@master
+        uses: martinbeentjes/npm-get-version-action@1.3.1
 
       - name: Create Release
         if: startsWith(github.event.head_commit.message, 'Release') || github.event.inputs.release == 'Yes'
@@ -79,7 +79,7 @@ jobs:
     steps:
       - name: Checkout source
         if: startsWith(matrix.target, 'Android-APK')
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: YeonV/yeonic
           ref: main
@@ -207,7 +207,7 @@ jobs:
     name: Build Desktop (${{ matrix.title }})
     steps:
       - name: Checkout source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: main
 
@@ -244,7 +244,7 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: Upload Binary to Workflow
-        if: startsWith(github.event.head_commit.message, 'Release') != true && github.event.inputs.release == 'No'
+        if: startsWith(github.event.head_commit.message, 'Build') || github.event.inputs.release == 'No'
         uses: actions/upload-artifact@v3
         with:
           name: yeonic-${{ needs.prepare.outputs.version }}${{ matrix.postfix }}
@@ -263,7 +263,7 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: Upload Binary 2 to Workflow
-        if: startsWith(github.event.head_commit.message, 'Release') != true && github.event.inputs.release == 'No'
+        if: startsWith(github.event.head_commit.message, 'Build') || github.event.inputs.release == 'No'
         uses: actions/upload-artifact@v3
         with:
           name: yeonic-${{ needs.prepare.outputs.version }}${{ matrix.postfix2 }}
@@ -271,12 +271,12 @@ jobs:
           retention-days: 60
 
       - name: Send Discord Release Post
-        if: startsWith(matrix.os, 'windows') && (github.event.inputs.release == 'Yes' || startsWith(github.event.head_commit.message, 'Release'))
+        if: startsWith(matrix.os, 'ubuntu') && (github.event.inputs.release == 'Yes' || startsWith(github.event.head_commit.message, 'Release'))
         run: |
           curl -H "Content-Type: application/json" -d '{"content": "**[DOWNLOAD]** <https://github.com/YeonV/yeonic/releases/tag/${{ env.action_state }}>\n\n**[PREVIEW]** <https://yeonv.github.io/yeonic/>"}' ${{ secrets.DISCORD_RELEASE_WEBHOOK }}
 
       - name: Send Discord Beta Post
-        if: startsWith(matrix.os, 'windows') && (github.event.inputs.release == 'No' || startsWith(github.event.head_commit.message, 'Build'))
+        if: startsWith(matrix.os, 'ubuntu') && (github.event.inputs.release == 'No' || startsWith(github.event.head_commit.message, 'Build'))
         run: |
           RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           curl -H "Content-Type: application/json" -d '{"content": "**[DOWNLOAD]** <'$RUN_URL'>\n\n**[PREVIEW]** <https://yeonv.github.io/yeonic/>"}' ${{ secrets.DISCORD_BETA_WEBHOOK }}
