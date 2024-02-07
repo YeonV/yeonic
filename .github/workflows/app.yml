@@ -1,5 +1,4 @@
 name: Build App
-run-name: Creating Production Ready Android App 🚀
 on:
   workflow_dispatch:
     inputs:
@@ -63,7 +62,7 @@ jobs:
           draft: false
           prerelease: false
 
-  buildmobile:
+  Build_Mobile:
     needs: prepare
     if: startsWith(github.event.head_commit.message, 'Release') || startsWith(github.event.head_commit.message, 'Build')
     permissions: write-all
@@ -171,9 +170,9 @@ jobs:
           asset_name: yeonic-${{ needs.prepare.outputs.version }}--android.apk
           asset_content_type: application/vnd.android.package-archive
 
-  builddesktop:
-    name: Build Desktop
+  Build_Desktop:
     needs: prepare
+    permissions: write-all
     continue-on-error: true
     if: startsWith(github.event.head_commit.message, 'Release') || startsWith(github.event.head_commit.message, 'Build')
     strategy:
@@ -181,14 +180,19 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest, macos-14]
         include:
           - os: ubuntu-latest
+            title: Linux
             postfix: arm64
           - os: windows-latest
+            title: Windows
             postfix: win-setup.exe
           - os: macos-latest
+            title: macOS
             postfix: osx-x64.dmg
           - os: macos-14
+            title: macOS-arm64
             postfix: osx-arm64.dmg
     runs-on: ${{ matrix.os }}
+    name: Build Desktop (${{ matrix.title }})
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
@@ -212,7 +216,7 @@ jobs:
           npm run build-electron
           cd electron
           npm ci
-          npm run build && npx --yes electron-builder build -c ./electron-builder.config.json
+          npm run build && npx --yes electron-builder build -c ./electron-builder.config.json --publish never
           cd ..
 
       - name: Upload Binary to Release
