@@ -209,9 +209,10 @@ jobs:
       - name: Build Electron app
         run: |
           npx --yes cap sync @capacitor-community/electron
+          npm run build-electron
           cd electron
           npm ci
-          npm run build && electron-builder build -c ./electron-builder.config.json
+          npm run build && npx --yes electron-builder build -c ./electron-builder.config.json
           cd ..
 
       - name: Upload Binary to Release
