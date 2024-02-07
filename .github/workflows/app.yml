@@ -182,19 +182,27 @@ jobs:
           - os: ubuntu-latest
             title: Linux
             postfix: -linux.snap
+            mime: application/x-snap
             postfix2: -linux.AppImage
+            mime2: application/x-executable
           - os: windows-latest
             title: Windows
             postfix: -win-setup.exe
+            mime: application/x-msdownload
             postfix2: -win.zip
+            mime2: application/zip
           - os: macos-latest
             title: macOS
             postfix: .dmg
-            postfix2: .zip
+            mime: application/octet-stream
+            postfix2: -mac.zip
+            mime2: application/zip
           - os: macos-14
             title: macOS-M1
             postfix: -arm64.dmg
-            postfix2: -arm64.zip
+            mime: application/octet-stream
+            postfix2: -arm64-mac.zip
+            mime2: application/zip
     runs-on: ${{ matrix.os }}
     name: Build Desktop (${{ matrix.title }})
     steps:
