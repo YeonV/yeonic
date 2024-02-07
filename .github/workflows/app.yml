@@ -181,16 +181,16 @@ jobs:
         include:
           - os: ubuntu-latest
             title: Linux
-            postfix: arm64
+            postfix: linux.snap
           - os: windows-latest
             title: Windows
             postfix: win-setup.exe
           - os: macos-latest
             title: macOS
-            postfix: osx-x64.dmg
+            postfix: .dmg
           - os: macos-14
-            title: macOS-arm64
-            postfix: osx-arm64.dmg
+            title: macOS-M1
+            postfix: arm64.dmg
     runs-on: ${{ matrix.os }}
     name: Build Desktop (${{ matrix.title }})
     steps:
@@ -209,6 +209,9 @@ jobs:
 
       - name: Build Web App
         run: npm run build
+
+      - name: Set Version
+        run: npm version ${{ needs.prepare.outputs.version }}
 
       - name: Build Electron app
         run: |
