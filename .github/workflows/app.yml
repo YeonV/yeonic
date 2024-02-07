@@ -210,16 +210,13 @@ jobs:
       - name: Build Web App
         run: npm run build
 
-      - name: Set Version
-        continue-on-error: true
-        run: npm version ${{ needs.prepare.outputs.version }}
-
       - name: Build Electron app
         run: |
           npx --yes cap sync @capacitor-community/electron
           npm run build-electron
           cd electron
           npm ci
+          npm version ${{ needs.prepare.outputs.version }}
           npm run build && npx --yes electron-builder build -c ./electron-builder.config.json --publish never
           cd ..
 
