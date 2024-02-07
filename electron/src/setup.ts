@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { CapacitorElectronConfig } from '@capacitor-community/electron';
 import {
   CapElectronEventEmitter,
@@ -7,7 +8,6 @@ import {
 import chokidar from 'chokidar';
 import type { MenuItemConstructorOptions } from 'electron';
 import { app, BrowserWindow, Menu, MenuItem, nativeImage, Tray, session } from 'electron';
-import electronIsDev from 'electron-is-dev';
 import electronServe from 'electron-serve';
 import windowStateKeeper from 'electron-window-state';
 import { join } from 'path';
@@ -84,6 +84,7 @@ export class ElectronCapacitorApp {
   }
 
   // Helper function to load in the app.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async loadMainWindow(thisRef: any) {
     await thisRef.loadWebApp(thisRef.MainWindow);
   }
@@ -207,7 +208,7 @@ export class ElectronCapacitorApp {
         this.MainWindow.show();
       }
       setTimeout(() => {
-        if (electronIsDev) {
+        if (!app.isPackaged) {
           this.MainWindow.webContents.openDevTools();
         }
         CapElectronEventEmitter.emit('CAPELECTRON_DeeplinkListenerInitialized', '');
@@ -219,15 +220,18 @@ export class ElectronCapacitorApp {
 // Set a CSP up for our application based on the custom scheme
 export function setupContentSecurityPolicy(customScheme: string): void {
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    const isPackaged = app.isPackaged;
+    const defaultSrc = isPackaged
+      ? `${customScheme}://* 'unsafe-inline' data: connect-src 'self' https://api.github.com`
+      : `${customScheme}://* 'unsafe-inline' devtools://* 'unsafe-eval' data:`;
+
     callback({
       responseHeaders: {
         ...details.responseHeaders,
-        'Content-Security-Policy': [
-          electronIsDev
-            ? `default-src ${customScheme}://* 'unsafe-inline' devtools://* 'unsafe-eval' data:`
-            : `default-src ${customScheme}://* 'unsafe-inline' data:`,
-        ],
+        'Content-Security-Policy': [defaultSrc],
       },
     });
   });
 }
+
+
