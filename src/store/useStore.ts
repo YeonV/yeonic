@@ -1,22 +1,32 @@
 import { create } from 'zustand'
-import { devtools, persist } from 'zustand/middleware'
-import type {} from '@redux-devtools/extension'
+import { devtools, combine, persist } from 'zustand/middleware'
+import storeUI from './storeUI'
+import storeBears from './storeBear'
 
-interface BearState {
-  bears: number
-  setBears: (by: number) => void
-}
-
-export const useBearStore = create<BearState>()(
+const useStore = create(
   devtools(
     persist(
-      (set) => ({
-        bears: 0,
-        setBears: (to: number) => set({ bears: to }),
-      }),
+      combine(
+        {
+          hackedBy: 'Blade'
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (set: any) => ({
+          ...storeUI(set),
+          ...storeBears(set)
+          // user: storeUser(set),
+          // ...storeCloud(set)
+        })
+      ),
       {
-        name: 'bear-storage',
-      },
-    ),
-  ),
+        name: 'yeonic-storage',
+        partialize: (state) => Object.fromEntries(Object.entries(state).filter(([key]) => !['dialogs'].includes(key)))
+      }
+    )
+  )
 )
+
+const state = useStore.getState()
+export type IStore = typeof state
+
+export default useStore

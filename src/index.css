@@ -16,5 +16,6 @@ body {
   min-width: 320px;
   min-height: 100vh;
   flex-direction: column;
+  padding-bottom: 55px;
 }
 

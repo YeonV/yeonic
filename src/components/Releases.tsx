@@ -1,9 +1,9 @@
-import { Accordion, AccordionDetails, AccordionSummary,  Stack, Typography } from '@mui/material'
-import { ReleaseType } from '../App'
+import { Accordion, AccordionDetails, AccordionSummary, Stack, Typography } from '@mui/material'
 import { Android, ExpandMore } from '@mui/icons-material'
 import Linux from './Os/Linux'
 import Mac from './Os/Mac'
 import Win from './Os/Win'
+import type { ReleaseType } from '../pages/Home'
 
 const Releases = ({ releases }: { releases: ReleaseType[] }) => {
   const osIcon = (name: string) => {
@@ -33,11 +33,11 @@ const Releases = ({ releases }: { releases: ReleaseType[] }) => {
   }
 
   return (
-      <Accordion elevation={1} sx={{ maxWidth: 550}}>
-            <AccordionSummary expandIcon={<ExpandMore />} sx={{ textAlign: 'center'}}>
-              All Releases
-            </AccordionSummary>
-            <AccordionDetails>
+    <Accordion elevation={1} sx={{ maxWidth: 550 }}>
+      <AccordionSummary expandIcon={<ExpandMore />} sx={{ textAlign: 'center' }}>
+        All Releases
+      </AccordionSummary>
+      <AccordionDetails>
         {releases.map((r) => (
           <Accordion key={r.tag_name} elevation={3}>
             <AccordionSummary expandIcon={<ExpandMore />}>
@@ -60,9 +60,8 @@ const Releases = ({ releases }: { releases: ReleaseType[] }) => {
             </AccordionDetails>
           </Accordion>
         ))}
-
-</AccordionDetails>
-          </Accordion>
+      </AccordionDetails>
+    </Accordion>
   )
 }
 

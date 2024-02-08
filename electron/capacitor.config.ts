@@ -11,7 +11,12 @@ const config: CapacitorConfig = {
     androidScheme: 'https'
   },
   plugins: {
-    ZeroConf: {}
+    ZeroConf: {},
+    LocalNotifications: {
+      smallIcon: 'ic_stat_icon_config_sample',
+      iconColor: '#800000',
+      sound: 'beep.wav'
+    }
   }
 }
 

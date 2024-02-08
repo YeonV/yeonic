@@ -1,7 +1,7 @@
 {
   "name": "yeonic",
   "private": true,
-  "version": "0.0.5",
+  "version": "0.0.6",
   "type": "module",
   "author": {
     "name": "YeonV aka Blade",
@@ -33,15 +33,20 @@
     "@capacitor/core": "^5.6.0",
     "@capacitor/device": "^5.0.7",
     "@capacitor/ios": "^5.6.0",
+    "@capacitor/local-notifications": "^5.0.7",
+    "@capacitor/toast": "^5.0.7",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.15.7",
     "@mui/material": "^5.15.7",
-    "capacitor-zeroconf": "^2.0.0",
+    "capacitor-zeroconf": "github:connormartin12/capacitor-zeroconf",
     "electron-reload": "^2.0.0-alpha.1",
+    "immer": "^10.0.3",
     "react": "^17.0.0 || ^18.0.0",
+    "react-desktop-notify": "^1.0.2",
     "react-dom": "^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.22.0",
     "zustand": "^4.5.0"
   },
   "peerDependencies": {
@@ -52,6 +57,7 @@
     "@capacitor/assets": "^3.0.4",
     "@capacitor/cli": "^5.6.0",
     "@redux-devtools/extension": "^3.3.0",
+    "@types/bonjour": "^3.5.13",
     "@types/react": "^18.2.53",
     "@types/react-dom": "^18.2.18",
     "@types/react-native-zeroconf": "^0.12.3",
