@@ -1,10 +1,11 @@
-import { useState } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, CardContent, Stack, TextField, Typography, useTheme } from '@mui/material'
+import { useEffect, useState } from 'react'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, CardContent, Slider, Stack, TextField, Typography, useTheme } from '@mui/material'
 import { Toast } from '@capacitor/toast'
 import useStore from '../store/useStore'
 import logo from '/logo.svg'
 import Notify from 'react-desktop-notify'
 import { ExpandMore } from '@mui/icons-material'
+import { ScreenBrightness } from '@capacitor-community/screen-brightness';
 
 const showHelloToast = async (text: string) => {
   await Toast.show({
@@ -30,7 +31,7 @@ const notify = async (title: string, text: string, icon: string) => {
   }
 }
 
-function Features() {
+const Features = () => {
   const theme = useTheme()
   const [bearState, setBearState] = useState(0)
   const darkMode = useStore((state) => state.darkMode)
@@ -38,11 +39,24 @@ function Features() {
   const setDarkMode = useStore((state) => state.setDarkMode)
   const bears = useStore((state) => state.bears)
   const setBears = useStore((state) => state.setBears)
-  // const [zeroconfLog, setZeroconfLog] = useState('')
   const [noteTitle, setNoteTitle] = useState('Yeonic Notification')
   const [noteText, setNoteText] = useState('Hello world')
   const [noteIcon, setNoteIcon] = useState('https://raw.githubusercontent.com/YeonV/yeonic/main/icons/icon-512.webp')
   const info = useStore((state) => state.info)
+  const [brightness, setBrightness] = useState(0.5);
+  
+  const handleBrightness = async (_event: Event, newValue: number | number[]) => {
+    ScreenBrightness.setBrightness({brightness: newValue as number})
+    setBrightness(newValue as number);
+  }
+
+  useEffect(() => {
+    const getBrightness = async () => {
+      const {brightness: currentBrightness} = await ScreenBrightness.getBrightness()
+      setBrightness(currentBrightness);
+    }
+    getBrightness();
+  }, [])
 
   return (
     <div className='content'>
@@ -125,6 +139,12 @@ function Features() {
             </Stack>
           </AccordionDetails>
         </Accordion>
+
+        <Card elevation={5}>
+          <CardContent>
+            <Slider value={brightness} onChange={handleBrightness} />
+          </CardContent>
+        </Card>
 
         <Stack direction={'row'} justifyContent={'center'} spacing={2}>
           <Button variant='contained' onClick={() => setBearState(bearState + 1)}>
