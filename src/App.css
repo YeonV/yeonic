@@ -22,3 +22,8 @@ main {
   flex-grow: 1;
   justify-content: flex-start;
 }
+@media screen and (max-width: 480px) {
+  .content {
+    padding: 8px;    
+  }
+}

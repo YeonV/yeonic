@@ -1,22 +1,17 @@
-import { useEffect, useState } from 'react'
-import { Device, DeviceInfo } from '@capacitor/device'
-import { Button, Card, CardContent, Grid, Stack, TextField, Typography, useTheme } from '@mui/material'
-import { ZeroConf, ZeroConfWatchResult } from 'capacitor-zeroconf'
+import { useState } from 'react'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, CardContent, Stack, TextField, Typography, useTheme } from '@mui/material'
 import { Toast } from '@capacitor/toast'
 import useStore from '../store/useStore'
-import Badge from '../components/Badge'
 import logo from '/logo.svg'
 import Notify from 'react-desktop-notify'
+import { ExpandMore } from '@mui/icons-material'
 
 const showHelloToast = async (text: string) => {
   await Toast.show({
     text: text
   })
 }
-const techs = ['TypeScript', 'React', 'MaterialUI', 'Zustand', 'ReactRouter', 'Eslint', 'Vite', 'Electron', 'Capacitor']
-// const techs = ['React', 'Electron', 'Zustand', 'MaterialUI', 'TypeScript', 'Storybook', 'Eslint', 'Capacitor', 'Vite']
 
-const logDeviceInfo = async () => await Device.getInfo()
 export type ReleaseType = {
   name: string
   assets: {
@@ -37,82 +32,84 @@ const notify = async (title: string, text: string, icon: string) => {
 
 function Features() {
   const theme = useTheme()
+  const [bearState, setBearState] = useState(0)
   const darkMode = useStore((state) => state.darkMode)
+  const services = useStore((state) => state.services)
   const setDarkMode = useStore((state) => state.setDarkMode)
   const bears = useStore((state) => state.bears)
   const setBears = useStore((state) => state.setBears)
-  const [zeroconfLog, setZeroconfLog] = useState('')
+  // const [zeroconfLog, setZeroconfLog] = useState('')
   const [noteTitle, setNoteTitle] = useState('Yeonic Notification')
   const [noteText, setNoteText] = useState('Hello world')
   const [noteIcon, setNoteIcon] = useState('https://raw.githubusercontent.com/YeonV/yeonic/main/icons/icon-512.webp')
-  const [info, setInfo] = useState<DeviceInfo>({
-    model: 'unknown',
-    platform: 'web',
-    operatingSystem: 'unknown',
-    osVersion: 'unknown',
-    manufacturer: 'unknown',
-    isVirtual: false,
-    webViewVersion: '121.0.0.0'
-  })
-
-  useEffect(() => {
-    logDeviceInfo().then((i) => {
-      // console.log('Device info:', i)
-      setInfo(i)
-    })
-    console.log('ZeroConf.watch')
-    ZeroConf.watch(
-      {
-        type: '_http._tcp.',
-        domain: 'local.'
-      },
-      (res) => {
-        console.log('watch', res)
-        setZeroconfLog((z) => z + JSON.stringify(res))
-      }
-    ).then((res) => console.log('watched', res))
-    ZeroConf.addListener('discover', (result: ZeroConfWatchResult) => console.log(result))
-  }, [])
-
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  const subline = (window as any).Capacitor.isNative ? `native app on ${info.operatingSystem}` : `${info.operatingSystem} on web`
+  const info = useStore((state) => state.info)
 
   return (
     <div className='content'>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: 2, marginBottom: 5 }}>
+        <img src={logo} alt='logo' style={{ maxWidth: '90%', filter: theme.palette.mode === 'dark' ? 'invert(100%)' : '' }} />
+      </Box>
       <Stack direction={'column'} spacing={3}>
-        <Stack direction={'column'} alignItems={'center'} spacing={2} color={theme.palette.text.primary}>
-          <img src={logo} alt='logo' style={{ maxWidth: '90%', filter: theme.palette.mode === 'dark' ? 'invert(100%)' : '' }} />
-          <Typography mt={0} variant='caption' fontSize={14}>
-            Code in React Output to Web, Android, iOS, Windows, Mac, Linux
-            <br />
-            <span style={{ color: '#999' }}>running on {subline}</span>
-          </Typography>
-        </Stack>
-        <Grid container justifyContent={'center'} spacing={1} maxWidth={550}>
-          {techs.map((t) => (
-            <Grid item key={t}>
-              <Badge text={t} />
-            </Grid>
-          ))}
-        </Grid>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Stack direction={'row'} justifyContent={'space-between'} width={'100%'} alignItems={'center'} paddingRight={2}>
+              <Typography variant='h6'>Zeroconf</Typography>
+              <Typography variant='caption' color={theme.palette.text.disabled}>
+                {services.length} Services Discovered
+              </Typography>
+            </Stack>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Stack direction={'column'} spacing={2} fontSize={14}>
+              {services.map((s) => (
+                <Card key={s.name} elevation={5}>
+                  <CardContent>
+                    <Typography bgcolor={theme.palette.primary.main} color={theme.palette.primary.contrastText} borderRadius={4} marginBottom={1} variant='h6'>
+                      {s.name}
+                    </Typography>
+                    <Stack direction={'row'} justifyContent={'space-between'}>
+                      <Typography>IP Address</Typography>
+                      <Typography>{s.ipv4Addresses?.[0] || s.ipv6Addresses?.[0]}</Typography>
+                    </Stack>
+                    <Stack direction={'row'} justifyContent={'space-between'}>
+                      <Typography>Port</Typography>
+                      <Typography>{s.port}</Typography>
+                    </Stack>
+                    <Stack direction={'row'} justifyContent={'space-between'}>
+                      <Typography>Service Type</Typography>
+                      <Typography>{s.type}</Typography>
+                    </Stack>
+                  </CardContent>
+                </Card>
+              ))}
+            </Stack>
+          </AccordionDetails>
+        </Accordion>
 
-        <Card>
-          <CardContent>
-            <Typography variant='h6'>Zeroconf</Typography>
-            <Typography>{zeroconfLog}</Typography>
-          </CardContent>
-        </Card>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Stack direction={'row'} justifyContent={'space-between'} width={'100%'} alignItems={'center'} paddingRight={2}>
+              <Typography variant='h6'>Device Info</Typography>
+              <Typography variant='caption' color={theme.palette.text.disabled}>
+                {info.manufacturer} {info.model} - {info.operatingSystem} {info.osVersion}
+              </Typography>
+            </Stack>
+          </AccordionSummary>
+          <AccordionDetails>
+            {Object.entries(info).map(([key, value]) => (
+              <Stack key={key} direction={'row'} justifyContent={'space-between'}>
+                <Typography>{key}</Typography>
+                <Typography>{value}</Typography>
+              </Stack>
+            ))}
+          </AccordionDetails>
+        </Accordion>
 
-        <Stack direction={'row'} justifyContent={'center'} spacing={2}>
-          <Button variant='contained' onClick={() => setBears(bears + 1)}>
-            bears is {bears}
-          </Button>
-          <Button variant='contained' onClick={() => setDarkMode(!darkMode)}>
-            {theme.palette.mode} mode
-          </Button>
-        </Stack>
-        <Card>
-          <CardContent>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Typography variant='h6'>Notifications</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
             <Stack direction={'column'} spacing={2}>
               <TextField label='Title' variant='outlined' value={noteTitle} onChange={(e) => setNoteTitle(e.target.value)} />
               <TextField label='Text' variant='outlined' value={noteText} onChange={(e) => setNoteText(e.target.value)} />
@@ -126,8 +123,20 @@ function Features() {
                 </Button>
               </Stack>
             </Stack>
-          </CardContent>
-        </Card>
+          </AccordionDetails>
+        </Accordion>
+
+        <Stack direction={'row'} justifyContent={'center'} spacing={2}>
+          <Button variant='contained' onClick={() => setBearState(bearState + 1)}>
+            State is {bearState}
+          </Button>
+          <Button variant='contained' onClick={() => setBears(bears + 1)}>
+            Zustand is {bears}
+          </Button>
+          <Button variant='contained' onClick={() => setDarkMode(!darkMode)}>
+            {theme.palette.mode} mode
+          </Button>
+        </Stack>
       </Stack>
     </div>
   )

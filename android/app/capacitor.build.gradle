@@ -13,7 +13,7 @@ dependencies {
     implementation project(':capacitor-local-notifications')
     implementation project(':capacitor-toast')
     implementation project(':capacitor-zeroconf')
-
+    implementation "org.jmdns:jmdns:3.5.5"
 }
 
 

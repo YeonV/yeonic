@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { devtools, combine, persist } from 'zustand/middleware'
 import storeUI from './storeUI'
 import storeBears from './storeBear'
+import storePlugins from './storePlugins'
 
 const useStore = create(
   devtools(
@@ -13,7 +14,8 @@ const useStore = create(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (set: any) => ({
           ...storeUI(set),
-          ...storeBears(set)
+          ...storeBears(set),
+          ...storePlugins(set)
           // user: storeUser(set),
           // ...storeCloud(set)
         })
