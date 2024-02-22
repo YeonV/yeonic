@@ -63,7 +63,7 @@ jobs:
           tag_name: ${{ steps.package-version.outputs.current-version }}
           release_name: Release ${{ steps.package-version.outputs.current-version }}
           body: |
-            ${{ env.MESSAGES || 'New Relase' }}
+            ${{ env.MESSAGES || 'New Release' }}
           draft: false
           prerelease: false
 

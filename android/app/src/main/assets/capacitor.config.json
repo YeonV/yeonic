@@ -9,8 +9,8 @@
 	"plugins": {
 		"ZeroConf": {},
 		"LocalNotifications": {
-			"smallIcon": "ic_stat_icon_config_sample",
-			"iconColor": "#800000",
+			"smallIcon": "ic_launcher_foreground",
+			"iconColor": "#005aa0",
 			"sound": "beep.wav"
 		}
 	}

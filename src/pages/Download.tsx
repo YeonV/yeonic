@@ -1,14 +1,13 @@
-import type { ReleaseType } from './Home'
+import type { ReleaseType } from '../interfaces/ReleaseType'
 import { useEffect, useState } from 'react'
-import { Box, Stack, Typography, useTheme } from '@mui/material'
-import { repository } from '../../package.json'
-import Releases from '../components/Releases'
-import AssetsDesktop from '../components/AssetsDesktop'
-import AssetsMobile from '../components/AssetsMobile'
-import logo from '/logo.svg'
+import { Alert, Stack } from '@mui/material'
+import { repository, version } from '../../package.json'
+import AllReleases from '../components/AllReleases'
+import AssetsDesktop from '../components/Assets/AssetsDesktop'
+import AssetsMobile from '../components/Assets/AssetsMobile'
+import semver from 'semver'
 
 function Download() {
-  const theme = useTheme()
   const [releases, setReleases] = useState<ReleaseType[]>([])
 
   useEffect(() => {
@@ -20,22 +19,21 @@ function Download() {
     get()
   }, [])
 
+  if (releases.length === 0) return <div>Loading...</div>
   return (
     <div className='content'>
-      <Stack direction={'column'} spacing={3}>
-        <Stack direction={'column'} alignItems={'center'} spacing={4} color={theme.palette.text.primary}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: 2, marginBottom: 5 }}>
-            <img src={logo} alt='logo' style={{ maxWidth: '90%', filter: theme.palette.mode === 'dark' ? 'invert(100%)' : '' }} />
-          </Box>
-          <Typography mt={0} variant='caption' fontSize={14}>
-            Code in React Output to Web, Android, iOS, Windows, Mac, Linux
-            <br />
-          </Typography>
-        </Stack>
+      {semver.lt(version, releases[0].tag_name) && (
+        <>
+          <Alert severity='info'>
+            Update available. Version {releases[0].tag_name} is available. You are currently on {version}.
+          </Alert>
+        </>
+      )}
+      <Stack direction={'column'} spacing={3} paddingTop={3}>
         {releases[0] && <AssetsDesktop release={releases[0]} />}
         {releases[0] && <AssetsMobile release={releases[0]} />}
 
-        <Releases releases={releases} />
+        <AllReleases releases={releases} />
       </Stack>
     </div>
   )

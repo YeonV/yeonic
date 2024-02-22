@@ -1,7 +1,7 @@
 {
   "name": "yeonic",
   "private": true,
-  "version": "0.0.7",
+  "version": "0.0.8",
   "type": "module",
   "author": {
     "name": "YeonV aka Blade",
@@ -51,6 +51,7 @@
     "react-desktop-notify": "^1.0.2",
     "react-dom": "^17.0.0 || ^18.0.0",
     "react-router-dom": "^6.22.0",
+    "semver": "^7.6.0",
     "zustand": "^4.5.0"
   },
   "peerDependencies": {
