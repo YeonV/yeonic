@@ -1,4 +1,6 @@
 import { CapacitorConfig } from '@capacitor/cli'
+import { baseTheme } from './src/baseTheme'
+
 const isDevelopment = process.env.NODE_ENV === 'development'
 
 const config: CapacitorConfig = {
@@ -13,8 +15,8 @@ const config: CapacitorConfig = {
   plugins: {
     ZeroConf: {},
     LocalNotifications: {
-      smallIcon: 'ic_stat_icon_config_sample',
-      iconColor: '#800000',
+      smallIcon: 'ic_launcher_foreground',
+      iconColor: baseTheme.palette.primary.main,
       sound: 'beep.wav'
     }
   }
