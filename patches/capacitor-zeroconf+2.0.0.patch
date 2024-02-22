@@ -1,0 +1,25 @@
+diff --git a/node_modules/capacitor-zeroconf/ios/Plugin/ZeroConfPlugin.m b/node_modules/capacitor-zeroconf/ios/Plugin/ZeroConfPlugin.m
+index d4fd040..ff1a5ef 100644
+--- a/node_modules/capacitor-zeroconf/ios/Plugin/ZeroConfPlugin.m
++++ b/node_modules/capacitor-zeroconf/ios/Plugin/ZeroConfPlugin.m
+@@ -8,7 +8,7 @@
+            CAP_PLUGIN_METHOD(register, CAPPluginReturnPromise);
+            CAP_PLUGIN_METHOD(unregister, CAPPluginReturnPromise);
+            CAP_PLUGIN_METHOD(stop, CAPPluginReturnPromise);
+-           CAP_PLUGIN_METHOD(watch, CAPPluginReturnPromise);
++           CAP_PLUGIN_METHOD(watch, CAPPluginReturnCallback);
+            CAP_PLUGIN_METHOD(unwatch, CAPPluginReturnPromise);
+ )
+ 
+diff --git a/node_modules/capacitor-zeroconf/ios/Plugin/ZeroConfPlugin.swift b/node_modules/capacitor-zeroconf/ios/Plugin/ZeroConfPlugin.swift
+index c55115d..a97d886 100644
+--- a/node_modules/capacitor-zeroconf/ios/Plugin/ZeroConfPlugin.swift
++++ b/node_modules/capacitor-zeroconf/ios/Plugin/ZeroConfPlugin.swift
+@@ -88,6 +88,7 @@ public class ZeroConfPlugin: CAPPlugin {
+     }
+ 
+     @objc func watch(_ call: CAPPluginCall) {
++        call.keepAlive = true
+         let typeParam = call.getString("type")
+         let domainParam = call.getString("domain")
+ 
