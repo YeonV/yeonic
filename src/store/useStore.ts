@@ -3,6 +3,7 @@ import { devtools, combine, persist } from 'zustand/middleware'
 import storeUI from './storeUI'
 import storeBears from './storeBear'
 import storePlugins from './storePlugins'
+import storeAudio from './storeAudio'
 
 const useStore = create(
   devtools(
@@ -15,7 +16,8 @@ const useStore = create(
         (set: any) => ({
           ...storeUI(set),
           ...storeBears(set),
-          ...storePlugins(set)
+          ...storePlugins(set),
+          ...storeAudio(set),
           // user: storeUser(set),
           // ...storeCloud(set)
         })

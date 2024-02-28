@@ -4,7 +4,8 @@
 	"webDir": "dist",
 	"server": {
 		"cleartext": true,
-		"androidScheme": "https"
+		"androidScheme": "https",
+		"iosScheme": "https"
 	},
 	"plugins": {
 		"ZeroConf": {},

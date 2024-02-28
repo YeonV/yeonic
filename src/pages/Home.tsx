@@ -46,7 +46,7 @@ function Home() {
         <Typography mt={0} p={1} variant='caption' fontSize={14}>
           <span style={{ color: '#999' }}>
             {Capacitor.isNativePlatform() ? 'native app on ' : 'web on '}
-            {info.operatingSystem}
+            {info.operatingSystem}!
           </span>
         </Typography>
       </Stack>

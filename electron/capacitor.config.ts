@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli'
 import { baseTheme } from './src/baseTheme'
 
-const isDevelopment = process.env.NODE_ENV === 'development'
+const isDevelopment = true || process.env.NODE_ENV === 'development' || process.env.YZ === 'true'
 
 const config: CapacitorConfig = {
   appId: 'com.blade.yeonic',

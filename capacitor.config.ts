@@ -1,16 +1,16 @@
 import { CapacitorConfig } from '@capacitor/cli'
 // import { baseTheme } from './src/themes/baseTheme'
 
-const isDevelopment = process.env.NODE_ENV === 'development'
+// const isDevelopment = true || process.env.NODE_ENV === 'development' || process.env.YZ === 'true'
 
 const config: CapacitorConfig = {
   appId: 'com.blade.yeonic',
   appName: 'yeonic',
   webDir: 'dist',
   server: {
-    url: isDevelopment ? 'http://192.168.1.236:5173' : undefined,
     cleartext: true,
-    androidScheme: 'https'
+    androidScheme: 'https',
+		iosScheme: "https",
   },
   plugins: {
     ZeroConf: {},

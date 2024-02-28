@@ -14,6 +14,8 @@ PODS:
     - Capacitor
   - CordovaPlugins (5.6.0):
     - CapacitorCordova
+  - MozartecCapacitorMicrophone (5.0.0):
+    - Capacitor
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
@@ -24,6 +26,7 @@ DEPENDENCIES:
   - "CapacitorToast (from `../../node_modules/@capacitor/toast`)"
   - CapacitorZeroconf (from `../../node_modules/capacitor-zeroconf`)
   - CordovaPlugins (from `../capacitor-cordova-ios-plugins`)
+  - "MozartecCapacitorMicrophone (from `../../node_modules/@mozartec/capacitor-microphone`)"
 
 EXTERNAL SOURCES:
   Capacitor:
@@ -42,6 +45,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/capacitor-zeroconf"
   CordovaPlugins:
     :path: "../capacitor-cordova-ios-plugins"
+  MozartecCapacitorMicrophone:
+    :path: "../../node_modules/@mozartec/capacitor-microphone"
 
 SPEC CHECKSUMS:
   Capacitor: ebfc16cdb8116d04c101686b080342872da42d43
@@ -52,7 +57,8 @@ SPEC CHECKSUMS:
   CapacitorToast: c8bb89eeb59a23c1fc298f138cc06c8ff4d90ac1
   CapacitorZeroconf: 310daf09c97a6897e7bdd91e68a70faac36a440a
   CordovaPlugins: dae7dac59b3cce58f5a7ce3894709d8f0f824656
+  MozartecCapacitorMicrophone: 78fa61dd3a64f2f017602bff9f51f88acb872a4c
 
-PODFILE CHECKSUM: c1c479bec5ba87a9cef2452045037f081f62556d
+PODFILE CHECKSUM: 1ec60700ceb2f67a24fb02efdac5116627fee660
 
 COCOAPODS: 1.15.0

@@ -3,7 +3,7 @@ import { Card, CardContent, IconButton, Stack, Typography, useTheme } from '@mui
 import type { ZeroConfService } from 'capacitor-zeroconf'
 import useStore from '../store/useStore'
 
-const ServiceCard = ({ service }: { service: ZeroConfService }) => {
+const ServiceCard = ({ service, onClick }: { service: ZeroConfService, onClick: ()=>void }) => {
   const theme = useTheme()
   const removeService = useStore((state) => state.removeService)
   return (
@@ -19,12 +19,12 @@ const ServiceCard = ({ service }: { service: ZeroConfService }) => {
         <IconButton>
           <Settings />
         </IconButton>
-        <Typography variant='h6'>{service.name}</Typography>
+        <Typography variant='h6' onClick={onClick}>{service.name}</Typography>
         <IconButton onClick={() => removeService(service)}>
           <Delete />
         </IconButton>
       </Stack>
-      <CardContent>
+      <CardContent onClick={onClick}>
         <Stack direction={'row'} justifyContent={'space-between'}>
           <Typography>IP Address</Typography>
           <Typography>{service.ipv4Addresses?.[0] || service.ipv6Addresses?.[0]}</Typography>
