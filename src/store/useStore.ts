@@ -3,6 +3,7 @@ import { devtools, combine, persist } from 'zustand/middleware'
 import storeUI from './storeUI'
 import storeBears from './storeBear'
 import storePlugins from './storePlugins'
+import storeAudio from './storeAudio'
 
 const useStore = create(
   devtools(
@@ -15,14 +16,15 @@ const useStore = create(
         (set: any) => ({
           ...storeUI(set),
           ...storeBears(set),
-          ...storePlugins(set)
+          ...storePlugins(set),
+          ...storeAudio(set),
           // user: storeUser(set),
           // ...storeCloud(set)
         })
       ),
       {
-        name: 'yeonic-storage',
-        partialize: (state) => Object.fromEntries(Object.entries(state).filter(([key]) => !['dialogs'].includes(key)))
+        name: 'yeonic-store3',
+        partialize: (state) => Object.fromEntries(Object.entries(state).filter(([key]) => !['dialogs', 'audioSettings'].includes(key)))
       }
     )
   )

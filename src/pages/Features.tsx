@@ -6,6 +6,10 @@ import { notifyDesktop, notifyMobile, toast } from '../plugins/notify'
 import { scanZeroconf } from '../plugins/zeroconf'
 import ServiceCard from '../components/ServiceCard'
 import { Capacitor } from '@capacitor/core'
+import FullScreenDialog from '../components/Dialogs/FullScreen'
+import { ZeroConfService } from 'capacitor-zeroconf'
+import AudioContainer from '../components/Audio/AudioContainer'
+// import { DDPDevice } from '../plugins/DDPDevice'
 
 const Features = () => {
   const theme = useTheme()
@@ -25,7 +29,23 @@ const Features = () => {
   const clearServices = useStore((state) => state.clearServices)
   const platform = Capacitor.getPlatform()
   const mobile = ['ios', 'android'].includes(platform)
+  const [activeService, setActiveService] = useState('')
+  const audioDevices = useStore((state) => state.audioDevices)
 
+  // // Create a new DDPDevice instance
+  // const ddpDevice = new DDPDevice('192.168.1.170', 4048)
+
+  // // Create some pixel data
+  // const pixelData = new Uint8Array([255, 0, 0, 0, 255, 0, 0, 0, 255]) // RGB values for 3 pixels
+
+  // // Convert Uint8Array to Buffer
+  // const pixelBuffer = Buffer.from(pixelData.buffer)
+
+  const handleServiceClick = (service: ZeroConfService) => {
+    setActiveService(service.name)
+  }
+
+  console.log('audiotest', audioDevices)
   return (
     <div className='content'>
       <Stack direction={'column'} spacing={3}>
@@ -62,7 +82,7 @@ const Features = () => {
                 </Button>
               </Stack>
               {services.map((s) => (
-                <ServiceCard key={s.name} service={s} />
+                <ServiceCard key={s.name} service={s} onClick={() => handleServiceClick(s)} />
               ))}
             </Stack>
           </AccordionDetails>
@@ -118,12 +138,24 @@ const Features = () => {
           </AccordionDetails>
         </Accordion>
 
+
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+              <Typography variant='h6'>Audio</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <AudioContainer />
+          </AccordionDetails>
+        </Accordion>
+
         <Stack direction={'row'} justifyContent={'center'} spacing={2}>
           <Button onClick={() => setBearState(bearState + 1)}>State is {bearState}</Button>
           <Button onClick={() => setBears(bears + 1)}>Zustand is {bears}</Button>
           <Button onClick={() => setDarkMode(!darkMode)}>{theme.palette.mode} mode</Button>
         </Stack>
       </Stack>
+      {/* <Button onClick={() => ddpDevice.flush(pixelBuffer)}>sendPixels</Button> */}
+      <FullScreenDialog title={activeService} open={activeService !== ''} setOpen={setActiveService} />
     </div>
   )
 }
