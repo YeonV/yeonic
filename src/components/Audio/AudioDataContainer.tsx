@@ -85,8 +85,8 @@ const AudioDataContainer: React.FC<AudioDataContainerProps> = ({
       return null
     }
 
-    initializeAudioAnalyser()
-  }, [audioDeviceId, fft, videoDevice, theStream])
+    if (isPlaying) initializeAudioAnalyser()
+  }, [audioDeviceId, fft, videoDevice, theStream, isPlaying])
 
   useEffect(() => {
     if (isPlaying) {
@@ -110,11 +110,12 @@ const AudioDataContainer: React.FC<AudioDataContainerProps> = ({
   }
 
   return (
-    <div style={{ height: 255, position: 'relative', top: 0 }}>
+    <div style={{ position: 'relative', top: 0 }}>
       <Visualizer
         audioContext={audioContext.current}
         frequencyBandArray={frequencyBandArray}
         getFrequencyData={getFrequencyData}
+        isPlaying={isPlaying}
       />
     </div>
   )

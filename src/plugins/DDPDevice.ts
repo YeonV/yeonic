@@ -42,7 +42,7 @@
 //     header.writeUInt8(DDPDevice.SOURCE, 3)
 //     header.writeUInt32BE(packetCount * DDPDevice.MAX_DATALEN, 4)
 //     header.writeUInt16BE(bytesLength, 8)
-
+ 
 //     const udpData = Buffer.concat([header, data])
 //     this.sock.send(udpData, this.port, this.destination)
 //   }

@@ -138,6 +138,16 @@ const Features = () => {
           </AccordionDetails>
         </Accordion>
 
+
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+              <Typography variant='h6'>Audio</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <AudioContainer />
+          </AccordionDetails>
+        </Accordion>
+
         <Stack direction={'row'} justifyContent={'center'} spacing={2}>
           <Button onClick={() => setBearState(bearState + 1)}>State is {bearState}</Button>
           <Button onClick={() => setBears(bears + 1)}>Zustand is {bears}</Button>
@@ -146,7 +156,6 @@ const Features = () => {
       </Stack>
       {/* <Button onClick={() => ddpDevice.flush(pixelBuffer)}>sendPixels</Button> */}
       <FullScreenDialog title={activeService} open={activeService !== ''} setOpen={setActiveService} />
-      <AudioContainer />
     </div>
   )
 }

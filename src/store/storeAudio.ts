@@ -11,8 +11,8 @@ const storeAudio = (set: any) => ({
     false,
     'audio/setAudioDevice'
   ),
-  audioDevices: [] as string[],
-  setAudioDevices: (newDevices: string[]): void =>
+  audioDevices: [] as MediaDeviceInfo[],
+  setAudioDevices: (newDevices: MediaDeviceInfo[]): void =>
     set(
       produce((state: IStore) => {
         state.audioDevices = newDevices
