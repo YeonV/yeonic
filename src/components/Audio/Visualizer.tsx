@@ -18,7 +18,7 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext, frequencyBandArra
 
     const renderFrame = () => {
       requestAnimationFrame(renderFrame)
-
+      console.log('renderFrame')
       getFrequencyData((amplitudeArray) => {
         ctx.clearRect(0, 0, canvas.width, canvas.height) // Clear the canvas
 
@@ -29,7 +29,7 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext, frequencyBandArra
           const height = canvas.height * percent
           const offset = canvas.height - height - 1
           const barWidth = canvas.width / frequencyBandArray.length
-          const hue = i / frequencyBandArray.length * 360
+          const hue = (i / frequencyBandArray.length) * 360
 
           ctx.fillStyle = `hsl(${hue}, 100%, 50%)`
           ctx.fillRect(i * barWidth, offset, barWidth, height)

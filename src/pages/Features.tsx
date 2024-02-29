@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Button, Stack, TextField, Typography, useTheme } from '@mui/material'
 import useStore from '../store/useStore'
 import { ClearAll, ExpandMore } from '@mui/icons-material'
@@ -8,7 +8,8 @@ import ServiceCard from '../components/ServiceCard'
 import { Capacitor } from '@capacitor/core'
 import FullScreenDialog from '../components/Dialogs/FullScreen'
 import { ZeroConfService } from 'capacitor-zeroconf'
-import AudioDataContainer from '../components/Audio/AudioDataContainer'
+import AudioContainer from '../components/Audio/AudioContainer'
+// import { DDPDevice } from '../plugins/DDPDevice'
 
 const Features = () => {
   const theme = useTheme()
@@ -29,12 +30,16 @@ const Features = () => {
   const platform = Capacitor.getPlatform()
   const mobile = ['ios', 'android'].includes(platform)
   const [activeService, setActiveService] = useState('')
-  const audioDevice = useStore((state) => state.audioDevice)
-  const audioSettings = useStore((state) => state.audioSettings)
   const audioDevices = useStore((state) => state.audioDevices)
 
-  const theStream = useRef<MediaStream | null>(null)
+  // // Create a new DDPDevice instance
+  // const ddpDevice = new DDPDevice('192.168.1.170', 4048)
 
+  // // Create some pixel data
+  // const pixelData = new Uint8Array([255, 0, 0, 0, 255, 0, 0, 0, 255]) // RGB values for 3 pixels
+
+  // // Convert Uint8Array to Buffer
+  // const pixelBuffer = Buffer.from(pixelData.buffer)
 
   const handleServiceClick = (service: ZeroConfService) => {
     setActiveService(service.name)
@@ -139,13 +144,9 @@ const Features = () => {
           <Button onClick={() => setDarkMode(!darkMode)}>{theme.palette.mode} mode</Button>
         </Stack>
       </Stack>
+      {/* <Button onClick={() => ddpDevice.flush(pixelBuffer)}>sendPixels</Button> */}
       <FullScreenDialog title={activeService} open={activeService !== ''} setOpen={setActiveService} />
-      <AudioDataContainer
-        theStream={theStream}
-        audioDeviceId={audioDevice}
-        fft={audioSettings.fft}
-        bandCount={audioSettings.bands}
-      />
+      <AudioContainer />
     </div>
   )
 }

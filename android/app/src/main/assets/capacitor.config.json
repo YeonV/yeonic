@@ -7,6 +7,9 @@
 		"androidScheme": "https",
 		"iosScheme": "https"
 	},
+	"android": {
+		"allowMixedContent": true
+	},
 	"plugins": {
 		"ZeroConf": {},
 		"LocalNotifications": {

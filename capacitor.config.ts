@@ -10,7 +10,10 @@ const config: CapacitorConfig = {
   server: {
     cleartext: true,
     androidScheme: 'https',
-		iosScheme: "https",
+    iosScheme: 'https'
+  },
+  android: {
+    allowMixedContent: true
   },
   plugins: {
     ZeroConf: {},
