@@ -23,8 +23,8 @@ const useStore = create(
         })
       ),
       {
-        name: 'yeonic-storage',
-        partialize: (state) => Object.fromEntries(Object.entries(state).filter(([key]) => !['dialogs'].includes(key)))
+        name: 'yeonic-store3',
+        partialize: (state) => Object.fromEntries(Object.entries(state).filter(([key]) => !['dialogs', 'audioSettings'].includes(key)))
       }
     )
   )

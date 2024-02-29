@@ -18,8 +18,9 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext, frequencyBandArra
 
     const renderFrame = () => {
       requestAnimationFrame(renderFrame)
-      console.log('renderFrame')
+      
       getFrequencyData((amplitudeArray) => {
+        // console.log('renderFrame', amplitudeArray)
         ctx.clearRect(0, 0, canvas.width, canvas.height) // Clear the canvas
 
         // Draw the frequency bands
@@ -40,7 +41,7 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext, frequencyBandArra
     renderFrame()
   }, [audioContext, frequencyBandArray, getFrequencyData])
 
-  return <canvas ref={canvasRef} />
+  return <canvas ref={canvasRef} style={{ width: '95vw'}} />
 }
 
 export default Visualizer
