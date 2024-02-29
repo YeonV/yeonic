@@ -8,7 +8,7 @@ import ServiceCard from '../components/ServiceCard'
 import { Capacitor } from '@capacitor/core'
 import FullScreenDialog from '../components/Dialogs/FullScreen'
 import { ZeroConfService } from 'capacitor-zeroconf'
-import AudioDataContainer from '../components/Audio/AudioContainer'
+import AudioDataContainer from '../components/Audio/AudioDataContainer'
 
 const Features = () => {
   const theme = useTheme()
@@ -30,8 +30,8 @@ const Features = () => {
   const mobile = ['ios', 'android'].includes(platform)
   const [activeService, setActiveService] = useState('')
   const audioDevice = useStore((state) => state.audioDevice)
-  const audioDevices = useStore((state) => state.audioDevices)
   const audioSettings = useStore((state) => state.audioSettings)
+  const audioDevices = useStore((state) => state.audioDevices)
 
   const theStream = useRef<MediaStream | null>(null)
 
