@@ -16,6 +16,10 @@
 		"classpath": "com.capacitorjs.plugins.toast.ToastPlugin"
 	},
 	{
+		"pkg": "@frontall/capacitor-udp",
+		"classpath": "com.capacitorjs.plugins.udp.UDPPlugin"
+	},
+	{
 		"pkg": "@mozartec/capacitor-microphone",
 		"classpath": "com.mozartec.capacitor.microphone.MicrophonePlugin"
 	},

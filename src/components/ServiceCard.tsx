@@ -1,7 +1,8 @@
-import { Delete, Settings } from '@mui/icons-material'
+import { Delete, PlayArrow, Settings } from '@mui/icons-material'
 import { Card, CardContent, IconButton, Stack, Typography, useTheme } from '@mui/material'
 import type { ZeroConfService } from 'capacitor-zeroconf'
 import useStore from '../store/useStore'
+import { sendUDP } from '../plugins/UDP'
 
 const ServiceCard = ({ service, onClick }: { service: ZeroConfService, onClick: ()=>void }) => {
   const theme = useTheme()
@@ -19,10 +20,15 @@ const ServiceCard = ({ service, onClick }: { service: ZeroConfService, onClick: 
         <IconButton>
           <Settings />
         </IconButton>
-        <Typography variant='h6' onClick={onClick}>{service.name}</Typography>
-        <IconButton onClick={() => removeService(service)}>
-          <Delete />
-        </IconButton>
+        <div>
+          <Typography variant='h6' onClick={onClick}>{service.name}</Typography>
+          <IconButton onClick={() => removeService(service)}>
+            <Delete />
+          </IconButton>
+          <IconButton onClick={() => sendUDP({ip: service.ipv4Addresses[0]})}>
+            <PlayArrow />
+          </IconButton>
+        </div>
       </Stack>
       <CardContent onClick={onClick}>
         <Stack direction={'row'} justifyContent={'space-between'}>

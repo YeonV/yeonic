@@ -12,8 +12,12 @@ PODS:
     - Capacitor
   - CapacitorZeroconf (2.0.0):
     - Capacitor
+  - CocoaAsyncSocket (7.6.5)
   - CordovaPlugins (5.6.0):
     - CapacitorCordova
+  - FrontallCapacitorUdp (0.3.4):
+    - Capacitor
+    - CocoaAsyncSocket
   - MozartecCapacitorMicrophone (5.0.0):
     - Capacitor
 
@@ -26,7 +30,12 @@ DEPENDENCIES:
   - "CapacitorToast (from `../../node_modules/@capacitor/toast`)"
   - CapacitorZeroconf (from `../../node_modules/capacitor-zeroconf`)
   - CordovaPlugins (from `../capacitor-cordova-ios-plugins`)
+  - "FrontallCapacitorUdp (from `../../node_modules/@frontall/capacitor-udp`)"
   - "MozartecCapacitorMicrophone (from `../../node_modules/@mozartec/capacitor-microphone`)"
+
+SPEC REPOS:
+  trunk:
+    - CocoaAsyncSocket
 
 EXTERNAL SOURCES:
   Capacitor:
@@ -45,6 +54,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/capacitor-zeroconf"
   CordovaPlugins:
     :path: "../capacitor-cordova-ios-plugins"
+  FrontallCapacitorUdp:
+    :path: "../../node_modules/@frontall/capacitor-udp"
   MozartecCapacitorMicrophone:
     :path: "../../node_modules/@mozartec/capacitor-microphone"
 
@@ -56,9 +67,11 @@ SPEC CHECKSUMS:
   CapacitorLocalNotifications: c58afadd159f6bc540ef9b3cbdbc82510a2bf112
   CapacitorToast: c8bb89eeb59a23c1fc298f138cc06c8ff4d90ac1
   CapacitorZeroconf: 310daf09c97a6897e7bdd91e68a70faac36a440a
+  CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   CordovaPlugins: dae7dac59b3cce58f5a7ce3894709d8f0f824656
+  FrontallCapacitorUdp: 78579e28a0016d19762e0db86a549ddc8e5588e1
   MozartecCapacitorMicrophone: 78fa61dd3a64f2f017602bff9f51f88acb872a4c
 
-PODFILE CHECKSUM: 1ec60700ceb2f67a24fb02efdac5116627fee660
+PODFILE CHECKSUM: 9b14a818434d5576d877bb4088ca7250f8a734be
 
 COCOAPODS: 1.15.0
