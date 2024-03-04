@@ -1,5 +1,7 @@
-import { MenuItem, Stack, TextField } from '@mui/material'
+import { MenuItem, Slider, Stack, TextField } from '@mui/material'
 import React, { useRef, useEffect, useState } from 'react'
+import ColorPicker from '../ColorPicker'
+import useStore from '../../store/useStore'
 
 interface VisualizerProps {
   audioContext: AudioContext | null
@@ -12,6 +14,12 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext, frequencyBandArra
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const animationFrameId = useRef<number | null>(null)
   const [visualizationType, setVisualizationType] = useState('bars')
+  const color = useStore((state) => state.color)
+  const setColor = useStore((state) => state.setColor)
+  const bgColor = useStore((state) => state.bgColor)
+  const setBgColor = useStore((state) => state.setBgColor)
+  // const gcolor = useStore((state) => state.gcolor)
+  // const setGcolor = useStore((state) => state.setGcolor)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -318,8 +326,16 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext, frequencyBandArra
           <MenuItem value='vumeter'>VU Meter</MenuItem>
           <MenuItem value='polar'>Polar</MenuItem>
         </TextField>
+        <ColorPicker color={color} onChange={setColor} label='Color' />
+        <ColorPicker color={bgColor} onChange={setBgColor} label='Color' />
       </Stack>
-      <canvas ref={canvasRef} style={{ width: '100%' }} />
+      <Stack sx={{ height: 350 }} spacing={1} direction='row' alignItems={'baseline'}>
+        <Slider defaultValue={50} step={1} min={0} max={100} valueLabelDisplay='auto' orientation='vertical' sx={{ height: 255 }} />
+        <Stack spacing={1} direction='column' height={350} width={'100%'}>
+          <canvas ref={canvasRef} style={{ width: '100%' }} />
+          <Slider defaultValue={[4, 16]} step={1} min={0} max={frequencyBandArray.length || 16} valueLabelDisplay='auto' />
+        </Stack>
+      </Stack>
     </>
   )
 }

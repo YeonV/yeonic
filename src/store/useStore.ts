@@ -4,6 +4,7 @@ import storeUI from './storeUI'
 import storeBears from './storeBear'
 import storePlugins from './storePlugins'
 import storeAudio from './storeAudio'
+import storeDevices from './storeDevices'
 
 const useStore = create(
   devtools(
@@ -18,6 +19,7 @@ const useStore = create(
           ...storeBears(set),
           ...storePlugins(set),
           ...storeAudio(set),
+          ...storeDevices(set)
           // user: storeUser(set),
           // ...storeCloud(set)
         })

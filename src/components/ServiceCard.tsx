@@ -3,10 +3,33 @@ import { Card, CardContent, IconButton, Stack, Typography, useTheme } from '@mui
 import type { ZeroConfService } from 'capacitor-zeroconf'
 import useStore from '../store/useStore'
 import { sendUDP } from '../plugins/UDP'
+import { useEffect } from 'react'
 
-const ServiceCard = ({ service, onClick }: { service: ZeroConfService, onClick: ()=>void }) => {
+const ServiceCard = ({ service, onClick }: { service: ZeroConfService; onClick: () => void }) => {
   const theme = useTheme()
   const removeService = useStore((state) => state.removeService)
+  const devices = useStore((state) => state.devices)
+  const addDevice = useStore((state) => state.addDevice)
+
+  useEffect(() => {
+    const getInfo = async () => {
+      const r = await fetch(`http://${service.ipv4Addresses[0]}:80/json/info`)
+      const j = await r.json()
+      addDevice({
+        name: service.name,
+        ip: service.ipv4Addresses[0],
+        port: service.port,
+        type: service.type,
+        ledCount: j.leds.count
+      })
+    }
+    if (!devices.find((d) => d.ip === service.ipv4Addresses[0])) {
+      getInfo()
+    }
+  }, [devices, service, addDevice])
+
+  const device = devices.find((d) => d.ip === service.ipv4Addresses[0])
+
   return (
     <Card key={service.name} elevation={5}>
       <Stack
@@ -21,13 +44,27 @@ const ServiceCard = ({ service, onClick }: { service: ZeroConfService, onClick: 
           <Settings />
         </IconButton>
         <div>
-          <Typography variant='h6' onClick={onClick}>{service.name}</Typography>
+          <Typography variant='h6' onClick={onClick}>
+            {service.name}
+          </Typography>
           <IconButton onClick={() => removeService(service)}>
             <Delete />
           </IconButton>
-          <IconButton onClick={() => sendUDP({ip: service.ipv4Addresses[0]})}>
+          <IconButton onClick={() => sendUDP({ ip: service.ipv4Addresses[0] })}>
             <PlayArrow />
           </IconButton>
+          {device && (
+            <IconButton
+              onClick={() =>
+                sendUDP({
+                  ip: service.ipv4Addresses[0],
+                  pixels: Array(device.ledCount).fill([255, 0, 0]).flat()
+                })
+              }
+            >
+              <PlayArrow />
+            </IconButton>
+          )}
         </div>
       </Stack>
       <CardContent onClick={onClick}>
