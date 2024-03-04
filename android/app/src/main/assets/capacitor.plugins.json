@@ -1,5 +1,9 @@
 [
 	{
+		"pkg": "@blade86/capacitor-udp",
+		"classpath": "com.capacitorjs.plugins.udp.UDPPlugin"
+	},
+	{
 		"pkg": "@capacitor-community/screen-brightness",
 		"classpath": "com.elylucas.capscreenbrightness.ScreenBrightnessPlugin"
 	},
@@ -14,10 +18,6 @@
 	{
 		"pkg": "@capacitor/toast",
 		"classpath": "com.capacitorjs.plugins.toast.ToastPlugin"
-	},
-	{
-		"pkg": "@frontall/capacitor-udp",
-		"classpath": "com.capacitorjs.plugins.udp.UDPPlugin"
 	},
 	{
 		"pkg": "@mozartec/capacitor-microphone",

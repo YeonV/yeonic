@@ -1,7 +1,7 @@
 {
   "name": "yeonic",
-  "private": true,
-  "version": "0.1.0",
+  "private": false,
+  "version": "0.1.1",
   "type": "module",
   "author": {
     "name": "YeonV aka Blade",
@@ -34,6 +34,7 @@
     "y": "NODE_ENV=development && echo $NODE_ENV"
   },
   "dependencies": {
+    "@blade86/capacitor-udp": "^0.5.43",
     "@capacitor-community/electron": "^5.0.1",
     "@capacitor-community/screen-brightness": "^5.0.0",
     "@capacitor/android": "^5.6.0",
@@ -45,7 +46,6 @@
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.8",
-    "@frontall/capacitor-udp": "^0.3.4",
     "@ionic-native/core": "^5.36.0",
     "@ionic-native/zeroconf": "^5.36.0",
     "@mozartec/capacitor-microphone": "^5.0.0",

@@ -15,13 +15,14 @@ const ServiceCard = ({ service, onClick }: { service: ZeroConfService; onClick: 
     const getInfo = async () => {
       const r = await fetch(`http://${service.ipv4Addresses[0]}:80/json/info`)
       const j = await r.json()
-      addDevice({
-        name: service.name,
-        ip: service.ipv4Addresses[0],
-        port: service.port,
-        type: service.type,
-        ledCount: j.leds.count
-      })
+      if (j?.leds?.count)
+        addDevice({
+          name: service.name,
+          ip: service.ipv4Addresses[0],
+          port: service.port,
+          type: service.type,
+          ledCount: j.leds.count
+        })
     }
     if (!devices.find((d) => d.ip === service.ipv4Addresses[0])) {
       getInfo()

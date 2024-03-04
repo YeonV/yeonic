@@ -22,6 +22,7 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
+    "@blade86/capacitor-udp": "^0.5.43",
     "@capacitor-community/electron": "^5.0.1",
     "bonjour": "^3.5.0",
     "capacitor-zeroconf": "^2.0.0",

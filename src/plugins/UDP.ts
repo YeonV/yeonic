@@ -1,4 +1,4 @@
-import { UDP } from '@frontall/capacitor-udp'
+import { UDP } from '@blade86/capacitor-udp'
 
 function arrayToBase64String(a: number[]) {
   return btoa(String.fromCharCode(...a))
@@ -46,12 +46,19 @@ export interface SendUDPProps {
 /**
  * Send a UDP packet to a device
  */
-export const sendUDP = async ({ mode = 2, timeout = 5, pixels = Array(297).fill([255, 0, 0]).flat(), ip, port = 21324, bufferSize = 4096 }: SendUDPProps) => {
+export const sendUDP = async ({
+  mode = 2,
+  timeout = 5,
+  pixels = Array(297).fill([255, 0, 0]).flat(),
+  ip,
+  port = 21324,
+  bufferSize = 4096,
+}: SendUDPProps) => {
   //   console.log('sendUDP', mode, timeout, pixels, ip, port, bufferSize)
   const ledDataPrefix = [mode, timeout]
   const data = arrayToBase64String([...ledDataPrefix, ...pixels])
   const u = await UDP.create({
-    properties: { name: 'yz', bufferSize: bufferSize }
+    properties: { name: 'yz', bufferSize: bufferSize },
   })
   try {
     await UDP.bind({ socketId: u.socketId, address: '0.0.0.0', port })
@@ -59,6 +66,10 @@ export const sendUDP = async ({ mode = 2, timeout = 5, pixels = Array(297).fill(
   } catch (error) {
     console.error('Error with UDP:', error)
   } finally {
-    await UDP.close({ socketId: u.socketId })
+    try {
+      await UDP.close({ socketId: u.socketId })
+    } catch (error) {
+      console.error('Error closing UDP:', error)
+    }
   }
 }

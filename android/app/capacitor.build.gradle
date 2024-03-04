@@ -9,11 +9,11 @@ android {
 
 apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
+    implementation project(':blade86-capacitor-udp')
     implementation project(':capacitor-community-screen-brightness')
     implementation project(':capacitor-device')
     implementation project(':capacitor-local-notifications')
     implementation project(':capacitor-toast')
-    implementation project(':frontall-capacitor-udp')
     implementation project(':mozartec-capacitor-microphone')
     implementation project(':capacitor-zeroconf')
     implementation "org.jmdns:jmdns:3.5.5"
