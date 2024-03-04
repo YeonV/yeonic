@@ -4,6 +4,12 @@ function arrayToBase64String(a: number[]) {
   return btoa(String.fromCharCode(...a))
 }
 
+export interface IUDP {
+    socketId?: number;
+    ipv4?: string;
+    ipv6?: string;
+}
+
 export interface SendUDPProps {
   /**
    * The mode of the UDP packet:
@@ -40,7 +46,22 @@ export interface SendUDPProps {
   /**
    * The size of the buffer
    */
-  bufferSize?: number
+  u: any
+}
+
+export interface StartUDPProps {
+    /**
+     * The port to bind to
+     */
+    port?: number
+    /**
+     * The size of the buffer
+     */
+    bufferSize?: number
+}
+
+export interface StopUDPProps {
+    u: IUDP
 }
 
 /**
@@ -48,28 +69,43 @@ export interface SendUDPProps {
  */
 export const sendUDP = async ({
   mode = 2,
-  timeout = 5,
+  timeout = 1,
   pixels = Array(297).fill([255, 0, 0]).flat(),
   ip,
   port = 21324,
-  bufferSize = 4096,
+  u,
 }: SendUDPProps) => {
-  //   console.log('sendUDP', mode, timeout, pixels, ip, port, bufferSize)
   const ledDataPrefix = [mode, timeout]
   const data = arrayToBase64String([...ledDataPrefix, ...pixels])
-  const u = await UDP.create({
-    properties: { name: 'yz', bufferSize: bufferSize },
-  })
-  try {
-    await UDP.bind({ socketId: u.socketId, address: '0.0.0.0', port })
-    await UDP.send({ socketId: u.socketId, address: ip, port, buffer: data })
-  } catch (error) {
-    console.error('Error with UDP:', error)
-  } finally {
-    try {
-      await UDP.close({ socketId: u.socketId })
-    } catch (error) {
-      console.error('Error closing UDP:', error)
-    }
+  if (u && typeof u.socketId === 'number') {
+      try {
+        await UDP.send({ socketId: u.socketId, address: ip, port, buffer: data })
+      } catch (error) {
+        console.error('Error with UDP:', error)
+      }
   }
 }
+
+export const startUDP = async ({
+    port = 21324,
+    bufferSize = 4096,
+  }: StartUDPProps) => {
+    let u
+    try {
+      u = await UDP.create({ properties: { name: 'yz', bufferSize: bufferSize } })
+      if (u && typeof u.socketId === 'number') {            
+          await UDP.bind({ socketId: u.socketId, address: '0.0.0.0', port })
+          return u
+      }
+    } catch (error) {
+      console.error('Error with UDP:', error)
+    } 
+  }
+
+export const stopUDP = async ({ u }: StopUDPProps) => {
+    try {
+        if (u && typeof u.socketId === 'number') await UDP.close({ socketId: u.socketId })
+      } catch (error) {
+        console.error('Error closing UDP:', error)
+      }
+  }

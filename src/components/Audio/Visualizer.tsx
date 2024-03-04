@@ -1,7 +1,9 @@
-import { MenuItem, Slider, Stack, TextField } from '@mui/material'
+import { Button, MenuItem, Slider, Stack, TextField } from '@mui/material'
 import React, { useRef, useEffect, useState } from 'react'
 import ColorPicker from '../ColorPicker'
 import useStore from '../../store/useStore'
+import { IUDP, sendUDP, startUDP } from '../../plugins/UDP'
+import Effect, { effects } from '../../effects/Effect'
 
 interface VisualizerProps {
   audioContext: AudioContext | null
@@ -12,14 +14,22 @@ interface VisualizerProps {
 
 const Visualizer: React.FC<VisualizerProps> = ({ audioContext, frequencyBandArray, getFrequencyData, isPlaying }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const udpRef = useRef<IUDP | null>(null)
+  const timeStarted = useRef<number | null>(null)
   const animationFrameId = useRef<number | null>(null)
   const [visualizationType, setVisualizationType] = useState('bars')
   const color = useStore((state) => state.color)
   const setColor = useStore((state) => state.setColor)
   const bgColor = useStore((state) => state.bgColor)
   const setBgColor = useStore((state) => state.setBgColor)
-  // const gcolor = useStore((state) => state.gcolor)
-  // const setGcolor = useStore((state) => state.setGcolor)
+  const minVolume = useStore((state) => state.minVolume)
+  const setMinVolume = useStore((state) => state.setMinVolume)
+  const selectedBands = useStore((state) => state.selectedBands)
+  const setSelectedBands = useStore((state) => state.setSelectedBands)
+  const effect = useStore((state) => state.effect)
+  const setEffect = useStore((state) => state.setEffect)
+  const gcolor = useStore((state) => state.gcolor)
+  const setGcolor = useStore((state) => state.setGcolor)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -39,6 +49,10 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext, frequencyBandArra
 
         ctx.fillStyle = `hsl(${hue}, 100%, 50%)`
         ctx.fillRect(i * barWidth, offset, barWidth, height)
+        const pixels = Effect({type: effect, config: { ampValues: amplitudeArray, pixel_count: 297, color, bgColor, gcolor, activeFb: selectedBands[0], activeRightFb: selectedBands[1], volume: minVolume, timeStarted: timeStarted}})?.flat()
+        // console.log("SOOO", udpRef.current, pixels)
+        sendUDP({ pixels, ip: '192.168.1.170', u: udpRef.current})
+        // console.log(pixels)
       }
     }
 
@@ -300,7 +314,24 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext, frequencyBandArra
         cancelAnimationFrame(animationFrameId.current)
       }
     }
-  }, [audioContext, frequencyBandArray, getFrequencyData, isPlaying])
+  }, [audioContext, bgColor, color, frequencyBandArray, getFrequencyData, isPlaying, visualizationType])
+
+  useEffect(() => {
+    const start = async () => {
+      if (!udpRef.current) {
+      const u = await startUDP({})
+      if (u) {
+        udpRef.current = u
+      }}
+    }
+    start()
+    // return () => {
+    //   if (udpRef.current) {
+    //     stopUDP({ u: udpRef.current })
+    //   }
+    // }
+  }, [])
+  // console.log("udpRef", udpRef.current)
 
   return (
     <>
@@ -326,14 +357,31 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext, frequencyBandArra
           <MenuItem value='vumeter'>VU Meter</MenuItem>
           <MenuItem value='polar'>Polar</MenuItem>
         </TextField>
+        <TextField
+        select
+        variant='outlined'
+        label='Effect'
+        value={effect}
+        onChange={(e) => setEffect(e.target.value)}
+        >
+          {effects.map((effect) => (
+            <MenuItem key={effect} value={effect}>
+              {effect}
+            </MenuItem>
+          ))}
+        </TextField>
         <ColorPicker color={color} onChange={setColor} label='Color' />
-        <ColorPicker color={bgColor} onChange={setBgColor} label='Color' />
+        <ColorPicker color={bgColor} onChange={setBgColor} label='BgColor' />
+        <ColorPicker color={gcolor} onChange={setGcolor} label='GColor' />
+        <Button onClick={() => {
+          timeStarted.current = performance.now()
+        }}>Start</Button>
       </Stack>
       <Stack sx={{ height: 350 }} spacing={1} direction='row' alignItems={'baseline'}>
-        <Slider defaultValue={50} step={1} min={0} max={100} valueLabelDisplay='auto' orientation='vertical' sx={{ height: 255 }} />
+        <Slider value={minVolume} onChange={(_e: Event, value: number|number[] ) => setMinVolume(Array.isArray(value) ? value[0] : value)} step={1} min={0} max={100} valueLabelDisplay='auto' orientation='vertical' sx={{ height: 255 }} />
         <Stack spacing={1} direction='column' height={350} width={'100%'}>
           <canvas ref={canvasRef} style={{ width: '100%' }} />
-          <Slider defaultValue={[4, 16]} step={1} min={0} max={frequencyBandArray.length || 16} valueLabelDisplay='auto' />
+          <Slider defaultValue={selectedBands} onChange={(_e: Event, value: number|number[] ) => setSelectedBands(Array.isArray(value) ? value : [value, value])} step={1} min={0} max={frequencyBandArray.length || 16} valueLabelDisplay='auto' />
         </Stack>
       </Stack>
     </>

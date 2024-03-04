@@ -154,7 +154,7 @@ const Features = () => {
             <Typography variant='h6'>UDP</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Button onClick={() => sendUDP({ ip: '192.168.1.170' })}>UDP test</Button>
+            <Button onClick={() => sendUDP({ ip: '192.168.1.170', u: 'device' })}>UDP test</Button>
           </AccordionDetails>
         </Accordion>
 

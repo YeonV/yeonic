@@ -1,5 +1,5 @@
 PODS:
-  - Blade86CapacitorUdp (0.5.42):
+  - Blade86CapacitorUdp (0.5.43):
     - Capacitor
     - CocoaAsyncSocket
   - Capacitor (5.7.1):
@@ -60,7 +60,7 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@mozartec/capacitor-microphone"
 
 SPEC CHECKSUMS:
-  Blade86CapacitorUdp: 4f03570b7744a0f9757fe6182a92155d9e109800
+  Blade86CapacitorUdp: 45d49e2bf1414888d9964b3e3fa93ec50ae73552
   Capacitor: 6bd16626bc7a4a382eff16f6aed0072fe9776951
   CapacitorCommunityScreenBrightness: b2d9c6fffee6b684994cd69f727f2090e2f05c6d
   CapacitorCordova: b49f3372270c88fd9c633a4fc8c7ef00e47dd2d6

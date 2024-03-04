@@ -2,6 +2,15 @@ import { produce } from 'immer'
 import type { IStore } from './useStore'
 
 const storeAudio = (set: any) => ({
+  effect: 'Power (Left FB)',
+  setEffect: (newEffect: string): void =>
+  set(
+    produce((state: IStore) => {
+      state.effect = newEffect
+    }),
+    false,
+    'audio/setEffect'
+  ),
   audioDevice: 'default',
   setAudioDevice: (newDevice: string): void =>
   set(
@@ -32,6 +41,24 @@ const storeAudio = (set: any) => ({
     }),
     false,
     'audio/setAudioSettings'
+  ),
+  minVolume: 0,
+  setMinVolume: (volume: number): void =>
+  set(
+    produce((state: IStore) => {
+      state.minVolume = volume
+    }),
+    false,
+    'audio/setMinVolume'
+  ),
+  selectedBands: [0, 31],
+  setSelectedBands: (bands: number[]): void =>
+  set(
+    produce((state: IStore) => {
+      state.selectedBands = bands
+    }),
+    false,
+    'audio/setSelectedBands'
   ),
     
 })

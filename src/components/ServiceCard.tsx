@@ -51,7 +51,7 @@ const ServiceCard = ({ service, onClick }: { service: ZeroConfService; onClick: 
           <IconButton onClick={() => removeService(service)}>
             <Delete />
           </IconButton>
-          <IconButton onClick={() => sendUDP({ ip: service.ipv4Addresses[0] })}>
+          <IconButton onClick={() => sendUDP({ ip: service.ipv4Addresses[0], u: device })}>
             <PlayArrow />
           </IconButton>
           {device && (
@@ -59,7 +59,8 @@ const ServiceCard = ({ service, onClick }: { service: ZeroConfService; onClick: 
               onClick={() =>
                 sendUDP({
                   ip: service.ipv4Addresses[0],
-                  pixels: Array(device.ledCount).fill([255, 0, 0]).flat()
+                  pixels: Array(device.ledCount).fill([255, 0, 0]).flat(),
+                  u: device
                 })
               }
             >
