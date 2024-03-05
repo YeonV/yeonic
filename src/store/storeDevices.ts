@@ -58,6 +58,19 @@ const storeDevices = (set: any) => ({
       }),
       false,
       'devices/updateDeviceByIp'
+    ),
+  addOrUpdateDevice: (device: DeviceProps): void =>
+    set(
+      produce((state: IStore) => {
+        const index = state.devices.findIndex((d) => d.ip === device.ip)
+        if (index === -1) {
+          state.devices.push(device)
+        } else {
+          state.devices[index] = device
+        }
+      }),
+      false,
+      'devices/addOrUpdateDevice'
     )
 })
 

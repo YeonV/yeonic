@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import Visualizer from './Visualizer'
+import AudioVisualizer from './AudioVisualizer'
 
 interface AudioDataContainerProps {
   audioDeviceId: string
@@ -10,14 +10,7 @@ interface AudioDataContainerProps {
   isPlaying: boolean
 }
 
-const AudioDataContainer: React.FC<AudioDataContainerProps> = ({
-  audioDeviceId,
-  fft,
-  bandCount,
-  videoDevice = 'none',
-  theStream,
-  isPlaying
-}) => {
+const AudioDataContainer: React.FC<AudioDataContainerProps> = ({ audioDeviceId, fft, bandCount, videoDevice = 'none', theStream, isPlaying }) => {
   const [frequencyBandArray] = useState<number[]>(Array.from({ length: bandCount }, (_, i) => i))
   const audioData = useRef<AnalyserNode | null>(null)
   const audioContext = useRef<AudioContext | null>(new AudioContext())
@@ -39,10 +32,9 @@ const AudioDataContainer: React.FC<AudioDataContainerProps> = ({
     }
 
     const getMedia = async (clientDevice: string | null) => {
-      const ad = await navigator.mediaDevices?.enumerateDevices()
-        .then((devices) =>
-          clientDevice !== null && devices.find((d) => d.deviceId === clientDevice) ? clientDevice : null
-        )
+      const ad = await navigator.mediaDevices
+        ?.enumerateDevices()
+        .then((devices) => (clientDevice !== null && devices.find((d) => d.deviceId === clientDevice) ? clientDevice : null))
       let videoStream: MediaStream | null = null
 
       if (ad) {
@@ -111,12 +103,7 @@ const AudioDataContainer: React.FC<AudioDataContainerProps> = ({
 
   return (
     <div style={{ position: 'relative', top: 0 }}>
-      <Visualizer
-        audioContext={audioContext.current}
-        frequencyBandArray={frequencyBandArray}
-        getFrequencyData={getFrequencyData}
-        isPlaying={isPlaying}
-      />
+      <AudioVisualizer audioContext={audioContext.current} frequencyBandArray={frequencyBandArray} getFrequencyData={getFrequencyData} isPlaying={isPlaying} />
     </div>
   )
 }

@@ -9,7 +9,6 @@ import { Capacitor } from '@capacitor/core'
 import FullScreenDialog from '../components/Dialogs/FullScreen'
 import { ZeroConfService } from 'capacitor-zeroconf'
 import AudioContainer from '../components/Audio/AudioContainer'
-import { sendUDP } from '../plugins/UDP'
 // import { DDPDevice } from '../plugins/DDPDevice'
 
 const Features = () => {
@@ -139,22 +138,12 @@ const Features = () => {
           </AccordionDetails>
         </Accordion>
 
-
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMore />}>
             <Typography variant='h6'>Audio</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <AudioContainer />
-          </AccordionDetails>
-        </Accordion>
-
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMore />}>
-            <Typography variant='h6'>UDP</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Button onClick={() => sendUDP({ ip: '192.168.1.170', u: 'device' })}>UDP test</Button>
           </AccordionDetails>
         </Accordion>
 

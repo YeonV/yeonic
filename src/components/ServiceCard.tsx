@@ -9,14 +9,14 @@ const ServiceCard = ({ service, onClick }: { service: ZeroConfService; onClick: 
   const theme = useTheme()
   const removeService = useStore((state) => state.removeService)
   const devices = useStore((state) => state.devices)
-  const addDevice = useStore((state) => state.addDevice)
+  const addOrUpdateDevice = useStore((state) => state.addOrUpdateDevice)
 
   useEffect(() => {
     const getInfo = async () => {
       const r = await fetch(`http://${service.ipv4Addresses[0]}:80/json/info`)
       const j = await r.json()
       if (j?.leds?.count)
-        addDevice({
+        addOrUpdateDevice({
           name: service.name,
           ip: service.ipv4Addresses[0],
           port: service.port,
@@ -27,7 +27,7 @@ const ServiceCard = ({ service, onClick }: { service: ZeroConfService; onClick: 
     if (!devices.find((d) => d.ip === service.ipv4Addresses[0])) {
       getInfo()
     }
-  }, [devices, service, addDevice])
+  }, [devices, service, addOrUpdateDevice])
 
   const device = devices.find((d) => d.ip === service.ipv4Addresses[0])
 
