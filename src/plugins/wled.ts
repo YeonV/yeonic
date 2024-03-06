@@ -108,6 +108,14 @@ export class WledDdpDevice {
 }
 
 /**
+ * Send a DDP packet to a wled device
+ */
+export async function sendWledDdp(props: SendWledUdpProps): Promise<void> {
+  const ddpDevice = new WledDdpDevice(props.ip, props.port || 4048, props.u)
+  if (props.pixels) await ddpDevice.flush(props.pixels)
+}
+
+/**
  * Send a UDP packet to a wled device
  */
 export const sendWledUdp = async ({ mode = 2, timeout = 1, pixels = Array(297).fill([255, 0, 0]).flat(), ip, port = 21324, u }: SendWledUdpProps) => {
@@ -126,12 +134,4 @@ export const sendWledUdp = async ({ mode = 2, timeout = 1, pixels = Array(297).f
       console.error('Error with UDP:', error)
     }
   }
-}
-
-/**
- * Send a DDP packet to a wled device
- */
-export async function sendWledDdp(props: SendWledUdpProps): Promise<void> {
-  const ddpDevice = new WledDdpDevice(props.ip, props.port || 4048, props.u)
-  if (props.pixels) await ddpDevice.flush(props.pixels)
 }
