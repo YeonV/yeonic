@@ -1,8 +1,8 @@
-import { Delete, PlayArrow, Settings } from '@mui/icons-material'
+import { Delete, Settings } from '@mui/icons-material'
 import { Card, CardContent, IconButton, Stack, Typography, useTheme } from '@mui/material'
 import type { ZeroConfService } from 'capacitor-zeroconf'
 import useStore from '../store/useStore'
-import { sendWledUdp } from '../plugins/wled'
+// import { sendWledUdp } from '../plugins/wled'
 import { useEffect } from 'react'
 
 const ServiceCard = ({ service, onClick }: { service: ZeroConfService; onClick: () => void }) => {
@@ -29,7 +29,7 @@ const ServiceCard = ({ service, onClick }: { service: ZeroConfService; onClick: 
     }
   }, [devices, service, addOrUpdateDevice])
 
-  const device = devices.find((d) => d.ip === service.ipv4Addresses[0])
+  // const device = devices.find((d) => d.ip === service.ipv4Addresses[0])
 
   return (
     <Card key={service.name} elevation={5}>
@@ -51,22 +51,6 @@ const ServiceCard = ({ service, onClick }: { service: ZeroConfService; onClick: 
           <IconButton onClick={() => removeService(service)}>
             <Delete />
           </IconButton>
-          <IconButton onClick={() => sendWledUdp({ ip: service.ipv4Addresses[0], u: device })}>
-            <PlayArrow />
-          </IconButton>
-          {device && (
-            <IconButton
-              onClick={() =>
-                sendWledUdp({
-                  ip: service.ipv4Addresses[0],
-                  pixels: Array(device.ledCount).fill([255, 0, 0]).flat(),
-                  u: device
-                })
-              }
-            >
-              <PlayArrow />
-            </IconButton>
-          )}
         </div>
       </Stack>
       <CardContent onClick={onClick}>

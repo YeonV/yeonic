@@ -1,5 +1,5 @@
 import { sendUdp } from './udp'
-import type { SendUdpProps } from './udp'
+import type { IUDP, SendUdpProps } from './udp'
 
 export interface SendWledUdpProps {
   /**
@@ -37,7 +37,7 @@ export interface SendWledUdpProps {
   /**
    * The size of the buffer
    */
-  u: any
+  u: IUDP
 }
 
 /**
@@ -62,9 +62,9 @@ export class WledDdpDevice {
   private frameCount: number = 0
   private destination: string
   private port: number
-  private u: any
+  private u: IUDP
 
-  constructor(destination: string, port: number, u: any) {
+  constructor(destination: string, port: number, u: IUDP) {
     this.destination = destination
     this.port = port
     this.u = u

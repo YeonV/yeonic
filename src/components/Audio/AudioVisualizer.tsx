@@ -65,17 +65,19 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
                 timeStarted: timeStarted
               }
             })
-            const props: SendWledUdpProps = {
-              mode: 2,
-              timeout: 1,
-              pixels,
-              ip,
-              u: udpRef.current
-            }
-            if (protocol === 'udp') {
-              sendWledUdp(props)
-            } else if (protocol === 'ddp') {
-              sendWledDdp(props)
+            if (udpRef.current) {
+              const props: SendWledUdpProps = {
+                mode: 2,
+                timeout: 1,
+                pixels,
+                ip,
+                u: udpRef.current
+              }
+              if (protocol === 'udp') {
+                sendWledUdp(props)
+              } else if (protocol === 'ddp') {
+                sendWledDdp(props)
+              }
             }
           })
         })
