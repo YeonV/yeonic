@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import AudioVisualizer from './AudioVisualizer'
-import { IUDP } from '../../plugins/UDP'
+import { IUDP } from '../../plugins/udp'
 
 interface AudioDataContainerProps {
   audioDeviceId: string
@@ -105,7 +105,13 @@ const AudioDataContainer: React.FC<AudioDataContainerProps> = ({ udpRef, audioDe
 
   return (
     <div style={{ position: 'relative', top: 0 }}>
-      <AudioVisualizer udpRef={udpRef} audioContext={audioContext.current} frequencyBandArray={frequencyBandArray} getFrequencyData={getFrequencyData} isPlaying={isPlaying} />
+      <AudioVisualizer
+        udpRef={udpRef}
+        audioContext={audioContext.current}
+        frequencyBandArray={frequencyBandArray}
+        getFrequencyData={getFrequencyData}
+        isPlaying={isPlaying}
+      />
     </div>
   )
 }

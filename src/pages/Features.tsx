@@ -9,7 +9,7 @@ import { Capacitor } from '@capacitor/core'
 import FullScreenDialog from '../components/Dialogs/FullScreen'
 import { ZeroConfService } from 'capacitor-zeroconf'
 import AudioContainer from '../components/Audio/AudioContainer'
-// import { DDPDevice } from '../plugins/DDPDevice'
+// import { WledDdpDevice } from '../plugins/WledDdpDevice'
 
 const Features = () => {
   const theme = useTheme()
@@ -32,8 +32,8 @@ const Features = () => {
   const [activeService, setActiveService] = useState('')
   const audioDevices = useStore((state) => state.audioDevices)
 
-  // // Create a new DDPDevice instance
-  // const ddpDevice = new DDPDevice('192.168.1.170', 4048)
+  // // Create a new WledDdpDevice instance
+  // const WledDdpDevice = new WledDdpDevice('192.168.1.170', 4048)
 
   // // Create some pixel data
   // const pixelData = new Uint8Array([255, 0, 0, 0, 255, 0, 0, 0, 255]) // RGB values for 3 pixels
@@ -153,7 +153,7 @@ const Features = () => {
           <Button onClick={() => setDarkMode(!darkMode)}>{theme.palette.mode} mode</Button>
         </Stack>
       </Stack>
-      {/* <Button onClick={() => ddpDevice.flush(pixelBuffer)}>sendPixels</Button> */}
+      {/* <Button onClick={() => WledDdpDevice.flush(pixelBuffer)}>sendPixels</Button> */}
       <FullScreenDialog title={activeService} open={activeService !== ''} setOpen={setActiveService} />
     </div>
   )

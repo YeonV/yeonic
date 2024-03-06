@@ -2,7 +2,7 @@ import { Delete, PlayArrow, Settings } from '@mui/icons-material'
 import { Card, CardContent, IconButton, Stack, Typography, useTheme } from '@mui/material'
 import type { ZeroConfService } from 'capacitor-zeroconf'
 import useStore from '../store/useStore'
-import { sendUDP } from '../plugins/UDP'
+import { sendWledUdp } from '../plugins/wled'
 import { useEffect } from 'react'
 
 const ServiceCard = ({ service, onClick }: { service: ZeroConfService; onClick: () => void }) => {
@@ -51,13 +51,13 @@ const ServiceCard = ({ service, onClick }: { service: ZeroConfService; onClick: 
           <IconButton onClick={() => removeService(service)}>
             <Delete />
           </IconButton>
-          <IconButton onClick={() => sendUDP({ ip: service.ipv4Addresses[0], u: device })}>
+          <IconButton onClick={() => sendWledUdp({ ip: service.ipv4Addresses[0], u: device })}>
             <PlayArrow />
           </IconButton>
           {device && (
             <IconButton
               onClick={() =>
-                sendUDP({
+                sendWledUdp({
                   ip: service.ipv4Addresses[0],
                   pixels: Array(device.ledCount).fill([255, 0, 0]).flat(),
                   u: device

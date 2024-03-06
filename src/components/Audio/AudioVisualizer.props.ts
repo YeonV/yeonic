@@ -1,4 +1,4 @@
-import { IUDP } from '../../plugins/UDP'
+import { IUDP } from '../../plugins/udp'
 
 export interface AudioVisualizerProps {
   audioContext: AudioContext | null
