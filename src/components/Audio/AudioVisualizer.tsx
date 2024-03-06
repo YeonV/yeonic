@@ -156,7 +156,7 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
       </Stack>
       <Divider sx={{ p: '1rem 0' }} />
       <Typography textAlign={'left'} variant='h6' pb={2}>
-        UDP
+        WLED
       </Typography>
       <Stack direction='row' spacing={2}>
         <TextField select variant='outlined' label='Effect' value={effect} onChange={(e) => setEffect(e.target.value)}>
@@ -170,39 +170,39 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
         <ColorPicker color={bgColor} onChange={setBgColor} label='BgColor' />
         <ColorPicker color={gcolor} gradient onChange={setGcolor} label='GColor' />
       </Stack>
-      <FormControl sx={{ flexGrow: 1 }}>
-        <InputLabel id='send-to-label'>Send effect to</InputLabel>
-        <Select
-          labelId='send-to-label'
-          fullWidth
-          id='send-to'
-          multiple
-          value={selectedDevices}
-          onChange={(e) => setSelectedDevices(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)}
-          input={<OutlinedInput id='select-multiple-chip' label='Send effect to' />}
-          renderValue={(selected) => (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {selected.map((value) => (
-                <Chip key={value} label={devices.find((d) => d.ip === value)?.name} />
-              ))}
-            </Box>
-          )}
-        >
-          {devices.map((device) => (
-            <MenuItem key={device.ip} value={device.ip}>
-              {device.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
       <Stack direction='row' spacing={2}>
+        <FormControl sx={{ flexGrow: 1 }}>
+          <InputLabel id='send-to-label'>Send effect to</InputLabel>
+          <Select
+            labelId='send-to-label'
+            fullWidth
+            id='send-to'
+            multiple
+            value={selectedDevices}
+            onChange={(e) => setSelectedDevices(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)}
+            input={<OutlinedInput id='select-multiple-chip' label='Send effect to' />}
+            renderValue={(selected) => (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                {selected.map((value) => (
+                  <Chip key={value} label={devices.find((d) => d.ip === value)?.name} />
+                ))}
+              </Box>
+            )}
+          >
+            {devices.map((device) => (
+              <MenuItem key={device.ip} value={device.ip}>
+                {device.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <TextField
           select
           variant='outlined'
           label='Protocol'
           value={protocol}
           onChange={(e) => setProtocol(e.target.value as 'udp' | 'ddp')}
-          style={{ maxWidth: '100%', minWidth: '150px', textAlign: 'left' }}
+          style={{ maxWidth: '100%', minWidth: '100px', textAlign: 'left' }}
         >
           <MenuItem value='udp'>UDP</MenuItem>
           <MenuItem value='ddp'>DDP</MenuItem>
