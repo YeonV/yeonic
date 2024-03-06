@@ -1,5 +1,5 @@
-import { sendUdp } from './udplib'
-import type { IUDP, SendUdpProps } from './udplib'
+import { sendUdp } from './udp'
+import type { IUDP, SendUdpProps } from './udp'
 
 export interface SendWledUdpProps {
   /**
