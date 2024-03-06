@@ -8,7 +8,7 @@ const Power = ({ ampValues, pixel_count, color, bgColor, activeFb, volume }: {
     activeFb: number
     volume: number
     
-}) =>
+}): number[] =>
   activeFb > -1
     ? Array(pixel_count)
       .fill([color.r, color.g, color.b])
@@ -17,7 +17,7 @@ const Power = ({ ampValues, pixel_count, color, bgColor, activeFb, volume }: {
         ampValues[activeFb] - volume * 2.55 > 0
           ? pixel_count * ((ampValues[activeFb] - volume * 2.55) / 255)
           : 0
-      )
-    : undefined
+      ).flat()
+    : []
 
 export default Power

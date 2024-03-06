@@ -3,10 +3,12 @@ import AudioDataContainer from './AudioDataContainer'
 import useStore from '../../store/useStore'
 import { Button, MenuItem, Stack, TextField } from '@mui/material'
 import { Pause, PlayArrow, Stop } from '@mui/icons-material'
+import { IUDP, startUDP, stopUDP } from '../../plugins/UDP'
 
 const AudioContainer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false)
   const theStream = useRef<MediaStream | null>(null)
+  const udpRef = useRef<IUDP | null>(null)
 
   const audioDevice = useStore((state) => state.audioDevice)
   const setAudioDevice = useStore((state) => state.setAudioDevice)
@@ -37,6 +39,28 @@ const AudioContainer: React.FC = () => {
         console.log(err.name + ': ' + err.message)
       })
   }, [])
+
+  useEffect(() => {
+    const start = async () => {
+      if (!udpRef.current) {
+        const u = await startUDP({})
+        if (u) {
+          udpRef.current = u
+        }
+      }
+    }
+    if (isPlaying) start()
+    else if (udpRef.current) {
+      stopUDP({ u: udpRef.current })
+      udpRef.current = null
+    }
+    return () => {
+      if (udpRef.current) {
+        stopUDP({u: udpRef.current})
+        udpRef.current = null
+      }
+    }
+  }, [isPlaying])
 
   return (
     <Stack direction='column' spacing={2}>
@@ -86,6 +110,7 @@ const AudioContainer: React.FC = () => {
         bandCount={audioSettings.bands}
         theStream={theStream}
         isPlaying={isPlaying}
+        udpRef={udpRef}
         videoDevice='none'
       />
     </Stack>

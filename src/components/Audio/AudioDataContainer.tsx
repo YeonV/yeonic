@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import AudioVisualizer from './AudioVisualizer'
+import { IUDP } from '../../plugins/UDP'
 
 interface AudioDataContainerProps {
   audioDeviceId: string
@@ -8,9 +9,10 @@ interface AudioDataContainerProps {
   videoDevice?: string
   theStream: React.MutableRefObject<MediaStream | null>
   isPlaying: boolean
+  udpRef: React.MutableRefObject<IUDP | null>
 }
 
-const AudioDataContainer: React.FC<AudioDataContainerProps> = ({ audioDeviceId, fft, bandCount, videoDevice = 'none', theStream, isPlaying }) => {
+const AudioDataContainer: React.FC<AudioDataContainerProps> = ({ udpRef, audioDeviceId, fft, bandCount, videoDevice = 'none', theStream, isPlaying }) => {
   const [frequencyBandArray] = useState<number[]>(Array.from({ length: bandCount }, (_, i) => i))
   const audioData = useRef<AnalyserNode | null>(null)
   const audioContext = useRef<AudioContext | null>(new AudioContext())
@@ -103,7 +105,7 @@ const AudioDataContainer: React.FC<AudioDataContainerProps> = ({ audioDeviceId, 
 
   return (
     <div style={{ position: 'relative', top: 0 }}>
-      <AudioVisualizer audioContext={audioContext.current} frequencyBandArray={frequencyBandArray} getFrequencyData={getFrequencyData} isPlaying={isPlaying} />
+      <AudioVisualizer udpRef={udpRef} audioContext={audioContext.current} frequencyBandArray={frequencyBandArray} getFrequencyData={getFrequencyData} isPlaying={isPlaying} />
     </div>
   )
 }

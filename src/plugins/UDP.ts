@@ -1,6 +1,6 @@
 import { UDP } from '@blade86/capacitor-udp'
 
-function arrayToBase64String(a: number[]) {
+export function arrayToBase64String(a: number[]) {
   return btoa(String.fromCharCode(...a))
 }
 
@@ -64,6 +64,25 @@ export interface StopUDPProps {
     u: IUDP
 }
 
+export interface SendRawUDPProps {
+    /**
+     * The data to send
+     */
+    data: string
+    /**
+     * The IP address of the target device
+     */
+    ip: string
+    /**
+     * The port of the target device
+     */
+    port?: number
+    /**
+     * the udp ref
+     */
+    u: any
+}
+
 /**
  * Send a UDP packet to a device
  */
@@ -85,6 +104,21 @@ export const sendUDP = async ({
       }
   }
 }
+
+export const sendRawUDP = async ({
+    data,
+    ip,
+    port = 21324,
+    u,
+  }: SendRawUDPProps) => {
+    if (u && typeof u.socketId === 'number') {
+      try {
+        await UDP.send({ socketId: u.socketId, address: ip, port, buffer: data })
+      } catch (error) {
+        console.error('Error with UDP:', error)
+      }
+    }
+  }
 
 export const startUDP = async ({
     port = 21324,

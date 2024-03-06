@@ -2,17 +2,18 @@ import { Box, Chip, Divider, FormControl, InputLabel, MenuItem, OutlinedInput, S
 import React, { useRef, useEffect, useState } from 'react'
 import ColorPicker from '../ColorPicker'
 import useStore from '../../store/useStore'
-import { IUDP, sendUDP, startUDP } from '../../plugins/UDP'
+import { SendUDPProps, sendUDP } from '../../plugins/UDP'
 import Effect, { effects } from '../../effects/Effect'
 import { Visualizer } from './Visualizer/Visualizer'
 import type { AudioVisualizerProps } from './AudioVisualizer.props'
+import { sendDDP } from '../../plugins/DDPDevice'
 
-const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ audioContext, frequencyBandArray, getFrequencyData, isPlaying }) => {
+const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext, frequencyBandArray, getFrequencyData, isPlaying }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  const udpRef = useRef<IUDP | null>(null)
   const timeStarted = useRef<number | null>(null)
   const animationFrameId = useRef<number | null>(null)
   const [visualizationType, setVisualizationType] = useState<keyof typeof Visualizer>('bars')
+  const [protocol, setProtocol] = useState<'udp' | 'ddp'>('udp')
   const devices = useStore((state) => state.devices)
   const color = useStore((state) => state.color)
   const setColor = useStore((state) => state.setColor)
@@ -64,8 +65,20 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ audioContext, frequen
                 volume: minVolume,
                 timeStarted: timeStarted
               }
-            })?.flat()
-            sendUDP({ pixels, ip, u: udpRef.current })
+            })
+            const props: SendUDPProps = {
+              mode: 2,
+              timeout: 1,
+              pixels,
+              ip,
+              u: udpRef.current,
+            }
+            if (protocol === 'udp') {
+              sendUDP(props)
+            } else if (protocol === 'ddp') {
+              sendDDP(props)
+            }
+            
           })
         })
       }
@@ -82,33 +95,8 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ audioContext, frequen
         cancelAnimationFrame(animationFrameId.current)
       }
     }
-  }, [
-    audioContext,
-    bgColor,
-    color,
-    effect,
-    frequencyBandArray,
-    gcolor,
-    getFrequencyData,
-    isPlaying,
-    minVolume,
-    selectedBands,
-    visualizationType,
-    selectedDevices,
-    devices
-  ])
+  }, [audioContext, bgColor, color, effect, frequencyBandArray, gcolor, getFrequencyData, isPlaying, minVolume, selectedBands, visualizationType, selectedDevices, devices, udpRef])
 
-  useEffect(() => {
-    const start = async () => {
-      if (!udpRef.current) {
-        const u = await startUDP({})
-        if (u) {
-          udpRef.current = u
-        }
-      }
-    }
-    start()
-  }, [])
 
   return (
     <Stack direction='column' spacing={2}>
@@ -127,13 +115,6 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ audioContext, frequen
             </MenuItem>
           ))}
         </TextField>
-        {/* <Button
-          onClick={() => {
-            timeStarted.current = performance.now()
-          }}
-        >
-          Start
-        </Button> */}
       </Stack>
       <Stack sx={{ height: 350 }} spacing={1} direction='row' alignItems={'baseline'}>
         <Slider
@@ -159,10 +140,7 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ audioContext, frequen
         </Stack>
       </Stack>
       <Divider sx={{ p: '1rem 0' }} />
-      <Typography textAlign={'left'} variant='h6' pb={2}>
-        UDP
-      </Typography>
-
+      <Typography textAlign={'left'} variant='h6' pb={2}>UDP</Typography>
       <Stack direction='row' spacing={2}>
         <TextField select variant='outlined' label='Effect' value={effect} onChange={(e) => setEffect(e.target.value)}>
           {effects.map((effect) => (
@@ -171,7 +149,6 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ audioContext, frequen
             </MenuItem>
           ))}
         </TextField>
-
         <ColorPicker color={color} onChange={setColor} label='Color' />
         <ColorPicker color={bgColor} onChange={setBgColor} label='BgColor' />
         <ColorPicker color={gcolor} gradient onChange={setGcolor} label='GColor' />
@@ -201,6 +178,19 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ audioContext, frequen
           ))}
         </Select>
       </FormControl>
+      <Stack direction='row' spacing={2}>
+        <TextField
+          select
+          variant='outlined'
+          label='Protocol'
+          value={protocol}
+          onChange={(e) => setProtocol(e.target.value as 'udp' | 'ddp')}
+          style={{ maxWidth: '100%', minWidth: '150px', textAlign: 'left' }}
+        >
+          <MenuItem value='udp'>UDP</MenuItem>
+          <MenuItem value='ddp'>DDP</MenuItem>
+        </TextField>
+        </Stack>
     </Stack>
   )
 }

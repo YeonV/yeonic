@@ -12,7 +12,7 @@ export const shifting = (pixel_count: number) => {
   }
 }
 
-const GradientAudio = ({ ampValues, pixel_count, activeFb, volume, timeStarted, gcolor }: any) => {
+const GradientAudio = ({ ampValues, pixel_count, activeFb, volume, timeStarted, gcolor }: any): number[] => {
   const tmp = getMultipleGradientSteps(
     gcolor.match(/rgb\([^()]*\)|#\w+/g).map((c: string) => c.match(/\d+/g)),
     pixel_count
@@ -28,7 +28,7 @@ const GradientAudio = ({ ampValues, pixel_count, activeFb, volume, timeStarted, 
   const sliceA = tmp.slice(0, shift)
   const sliceB = tmp.slice(shift)
 
-  return [...sliceB, ...sliceA]
+  return [...sliceB, ...sliceA].flat()
 }
 
 export default GradientAudio

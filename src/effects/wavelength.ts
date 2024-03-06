@@ -6,11 +6,11 @@ const Wavelength = ({ ampValues, pixel_count, color, activeFb, activeRightFb, vo
   activeFb: number
   activeRightFb: number
   volume: number
-}) =>
+}): number[] =>
   [...Array(pixel_count).keys()].map((v) => [
     ((ampValues.slice(activeFb, activeRightFb + 1)[v] - volume * 2.55) / 255) * color.r,
     ((ampValues.slice(activeFb, activeRightFb + 1)[v] - volume * 2.55) / 255) * color.g,
     ((ampValues.slice(activeFb, activeRightFb + 1)[v] - volume * 2.55) / 255) * color.b
-  ])
+  ]).flat()
 
 export default Wavelength

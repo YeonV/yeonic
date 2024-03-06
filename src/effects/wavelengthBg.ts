@@ -15,7 +15,7 @@ const WavelengthBg = ({
   activeFb: number
   activeRightFb: number
   volume: number
-}) =>
+}): number[] =>
   [...Array(pixel_count).keys()].map((v) => [
     (((ampValues.slice(activeFb, activeRightFb + 1)[v] - volume * 2.55) / 255) * color.r +
       bgColor.r) /
@@ -26,6 +26,6 @@ const WavelengthBg = ({
     (((ampValues.slice(activeFb, activeRightFb + 1)[v] - volume * 2.55) / 255) * color.b +
       bgColor.b) /
       2
-  ])
+  ]).flat()
 
 export default WavelengthBg

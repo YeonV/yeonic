@@ -18,7 +18,7 @@ export const getGradientSteps = (
   return color
 }
 
-export const getMultipleGradientSteps = (colors: any, count: number) => {
+export const getMultipleGradientSteps = (colors: any, count: number): number[] => {
   const output = [] as any[]
   for (let i = 0; i < colors.length - 2; i++) {
     const gradient = getGradientSteps(
