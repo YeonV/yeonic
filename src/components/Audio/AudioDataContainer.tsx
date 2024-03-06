@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import AudioVisualizer from './AudioVisualizer'
-import { IUDP } from '../../plugins/udp'
+import { IUDP } from '../../plugins/udplib'
 
 interface AudioDataContainerProps {
   audioDeviceId: string

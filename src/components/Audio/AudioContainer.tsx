@@ -3,7 +3,7 @@ import AudioDataContainer from './AudioDataContainer'
 import useStore from '../../store/useStore'
 import { Button, MenuItem, Stack, TextField } from '@mui/material'
 import { Pause, PlayArrow, Stop } from '@mui/icons-material'
-import { IUDP, startUDP, stopUDP } from '../../plugins/udp'
+import { IUDP, startUDP, stopUDP } from '../../plugins/udplib'
 
 const AudioContainer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false)
