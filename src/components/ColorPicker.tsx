@@ -5,7 +5,14 @@ import ReactGPicker from 'react-gcolor-picker'
 import classes from '../styles/GradientPicker.styles'
 import { Box, useTheme } from '@mui/material'
 
-const ColorPicker = ({ color, onChange, disabled, label, gradient }: any) => {
+const ColorPicker = ({ color, onChange, disabled, label, gradient }: {
+  color: { r: number, g: number, b: number } | string
+  onChange: any
+  disabled?: boolean
+  label: string
+  gradient?: boolean
+
+}) => {
   const theme = useTheme()
   const [isOpen, toggle] = useState(false)
   const popover = useRef<HTMLElement | null>(null)
@@ -44,7 +51,7 @@ const ColorPicker = ({ color, onChange, disabled, label, gradient }: any) => {
           border: '2px solid #555',
           boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(0, 0, 0, 0.1)',
           cursor: 'pointer',
-          background: gradient ? color : `rgb(${color.r}, ${color.g}, ${color.b})`
+          background: (typeof color === 'string' && gradient) ? color : (typeof color !== 'string') ? `rgb(${color.r}, ${color.g}, ${color.b})` : color
         }}
         onClick={() => {
           toggle(true)
@@ -90,7 +97,7 @@ const ColorPicker = ({ color, onChange, disabled, label, gradient }: any) => {
           }}
           ref={popover}
         >
-          {gradient ? (
+          {gradient && typeof color === 'string' ? (
             <ReactGPicker
               value={color}
               debounce={false}
@@ -104,7 +111,7 @@ const ColorPicker = ({ color, onChange, disabled, label, gradient }: any) => {
               defaultActiveTab={'gradient'}
               defaultColors={gcolors}
             />
-          ) : (
+          ) : typeof color !== 'string' && (
             <RgbColorPicker color={color} onChange={onChange} />
           )}
         </Box>

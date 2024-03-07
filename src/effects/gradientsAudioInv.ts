@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { MutableRefObject } from 'react'
 import { getMultipleGradientStepsInverted } from './utils'
 
 let shift = 0
@@ -16,7 +17,7 @@ const GradientAudioInv = ({ ampValues, pixel_count, activeFb, volume, timeStarte
   pixel_count: number
   activeFb: number
   volume: number
-  timeStarted: any
+  timeStarted: MutableRefObject<number | null>
   gcolor: string
 
 }): number[] => {
@@ -27,7 +28,7 @@ const GradientAudioInv = ({ ampValues, pixel_count, activeFb, volume, timeStarte
   const audio = ampValues[activeFb] - volume * 2.55 > 0
   const speed = audio ? 0 : 5
 
-  if (performance.now() - timeStarted.current >= 16 + speed * 9.84) {
+  if (timeStarted.current && (performance.now() - timeStarted.current >= 16 + speed * 9.84)) {
     shifting(pixel_count)
     timeStarted.current = performance.now()
   }

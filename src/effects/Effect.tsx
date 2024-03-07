@@ -1,11 +1,24 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 // import GradientRolling from "./gradientRolling";
+import { MutableRefObject } from 'react'
 import GradientAudio from './gradientsAudio'
 import GradientsAudioInv from './gradientsAudioInv'
 import GradientStatic from './gradientStatic'
 import Power from './power'
 import Wavelength from './wavelength'
 import WavelengthBg from './wavelengthBg'
+
+export interface IEffectConfig {
+  ampValues: number[]
+  pixel_count: number
+  color: { r: number, g: number, b: number }
+  bgColor: { r: number, g: number, b: number }
+  gcolor: string,
+  activeFb: number
+  activeRightFb: number
+  volume: number 
+  timeStarted: MutableRefObject<number | null>
+}
+
 
 export const effects = [
   'Power (Left FB)',
@@ -17,7 +30,10 @@ export const effects = [
   'GradientsAudioInv'
 ]
 
-const Effect = ({ type, config }: any) => {
+const Effect = ({ type, config }: {
+  type: string
+  config: IEffectConfig
+}) => {
   switch (type) {
     case 'Power (Left FB)':
       return Power(config)

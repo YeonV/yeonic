@@ -13,13 +13,12 @@ const useStore = create(
         {
           hackedBy: 'Blade'
         },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (set: any) => ({
+        (set) => ({
           ...storeUI(set),
           ...storeBears(set),
           ...storePlugins(set),
+          ...storeDevices(set),
           ...storeAudio(set),
-          ...storeDevices(set)
           // user: storeUser(set),
           // ...storeCloud(set)
         })

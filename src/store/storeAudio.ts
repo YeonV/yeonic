@@ -30,8 +30,8 @@ const storeAudio = (set: any) => ({
       'audio/setAudioDevices'
     ),
   audioSettings: {
-    fft: 1024,
-    bands: 32,
+    fft: 2048,
+    bands: 512,
     sampleRate: 48000
   },
   setAudioSettings: (config: Record<string, any>): void =>

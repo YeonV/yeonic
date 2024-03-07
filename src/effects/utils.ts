@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 export const getGradientSteps = (
-    colorStart: any[],
-    colorEnd: any[],
+    colorStart: [number, number, number],
+    colorEnd: [number, number, number],
     colorCount: number
   ) => {
   let alpha = 0.0

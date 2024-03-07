@@ -54,7 +54,7 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
             const pixels = Effect({
               type: effect,
               config: {
-                ampValues: amplitudeArray,
+                ampValues: Array.from(amplitudeArray),
                 pixel_count: devices.find((d) => d.ip === ip)?.ledCount || 297,
                 color,
                 bgColor,
