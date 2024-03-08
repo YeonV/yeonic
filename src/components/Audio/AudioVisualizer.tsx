@@ -27,6 +27,7 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
   const gcolor = useStore((state) => state.gcolor)
   const setGcolor = useStore((state) => state.setGcolor)
   const [selectedDevices, setSelectedDevices] = useState<string[]>([])
+  const [smooth, setSmooth] = useState<'yes' | 'no'>('no')
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -62,7 +63,8 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
                 activeFb: selectedBands[0],
                 activeRightFb: selectedBands[1],
                 volume: minVolume,
-                timeStarted: timeStarted
+                timeStarted: timeStarted,
+                smooth: smooth === 'yes'
               }
             })
             if (udpRef.current) {
@@ -110,7 +112,8 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
     selectedDevices,
     devices,
     udpRef,
-    protocol
+    protocol,
+    smooth
   ])
 
   return (
@@ -208,6 +211,17 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
           <MenuItem value='ddp'>DDP</MenuItem>
         </TextField>
       </Stack>
+      <TextField
+        select
+        variant='outlined'
+        label='Smooth'
+        value={smooth}
+        onChange={(e) => setSmooth(e.target.value as 'yes' | 'no')}
+        style={{ maxWidth: '100%', minWidth: '100px', textAlign: 'left' }}
+      >
+        <MenuItem value={'yes'}>Yes</MenuItem>
+        <MenuItem value={'no'}>No</MenuItem>
+      </TextField>
     </Stack>
   )
 }

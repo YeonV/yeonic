@@ -10,15 +10,15 @@ import WavelengthBg from './wavelengthBg'
 export interface IEffectConfig {
   ampValues: number[]
   pixel_count: number
-  color: { r: number, g: number, b: number }
-  bgColor: { r: number, g: number, b: number }
-  gcolor: string,
+  color: { r: number; g: number; b: number }
+  bgColor: { r: number; g: number; b: number }
+  gcolor: string
   activeFb: number
   activeRightFb: number
-  volume: number 
+  volume: number
   timeStarted: MutableRefObject<number | null>
+  smooth: boolean
 }
-
 
 export const effects = [
   'Power (Left FB)',
@@ -30,10 +30,7 @@ export const effects = [
   'GradientsAudioInv'
 ]
 
-const Effect = ({ type, config }: {
-  type: string
-  config: IEffectConfig
-}) => {
+const Effect = ({ type, config }: { type: string; config: IEffectConfig }) => {
   switch (type) {
     case 'Power (Left FB)':
       return Power(config)
@@ -47,8 +44,8 @@ const Effect = ({ type, config }: {
     case 'GradientStatic':
       return GradientStatic(config)
 
-      // case "GradientRolling":
-      //   return GradientRolling(config);
+    // case "GradientRolling":
+    //   return GradientRolling(config);
 
     case 'GradientAudio':
       return GradientAudio(config)

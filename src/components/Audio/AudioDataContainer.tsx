@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import AudioVisualizer from './AudioVisualizer'
 import { IUDP } from '../../plugins/udp'
+import { MenuItem, TextField } from '@mui/material'
 
 interface AudioDataContainerProps {
   audioDeviceId: string
@@ -11,12 +12,18 @@ interface AudioDataContainerProps {
   isPlaying: boolean
   udpRef: React.MutableRefObject<IUDP | null>
 }
+function logScale(index: number, total: number, base = 2) {
+  const logMax = Math.log(total) / Math.log(base)
+  const exp = (logMax * index) / total
+  return Math.pow(base, exp) - 1
+}
 
 const AudioDataContainer: React.FC<AudioDataContainerProps> = ({ udpRef, audioDeviceId, fft, bandCount, videoDevice = 'none', theStream, isPlaying }) => {
   const [frequencyBandArray] = useState<number[]>(Array.from({ length: bandCount }, (_, i) => i))
   const audioData = useRef<AnalyserNode | null>(null)
   const audioContext = useRef<AudioContext | null>(new AudioContext())
   const theGain = useRef<GainNode | null>(null)
+  const [scale, setScale] = useState<'log' | 'default'>('log')
 
   useEffect(() => {
     const initializeAudioAnalyser = async () => {
@@ -28,6 +35,19 @@ const AudioDataContainer: React.FC<AudioDataContainerProps> = ({ udpRef, audioDe
         const gain = audioContext.current.createGain()
         theGain.current = gain
         source.connect(gain)
+
+        // // Create a BiquadFilterNode
+        // const filter = audioContext.current.createBiquadFilter()
+        // filter.type = 'lowshelf'
+        // filter.frequency.value = 1000
+        // filter.gain.value = 25
+
+        // // Connect the gain node to the filter, and the filter to the analyser
+        // gain.connect(filter)
+        // filter.connect(analyser)
+
+        // audioData.current = analyser
+
         gain.connect(analyser)
         audioData.current = analyser
       }
@@ -100,11 +120,27 @@ const AudioDataContainer: React.FC<AudioDataContainerProps> = ({ udpRef, audioDe
     const amplitudeArray = new Uint8Array(bufferLength)
 
     audioData.current.getByteFrequencyData(amplitudeArray)
-    styleAdjuster(amplitudeArray)
+
+    // Map the amplitude array to a logarithmic scale
+    if (scale === 'log') {
+      const logAmplitudeArray = amplitudeArray.map((_amp, index) => {
+        const logIndex = logScale(index, amplitudeArray.length)
+        return amplitudeArray[logIndex]
+      })
+
+      styleAdjuster(logAmplitudeArray)
+      // styleAdjuster(amplitudeArray)
+    } else {
+      styleAdjuster(amplitudeArray)
+    }
   }
 
   return (
     <div style={{ position: 'relative', top: 0 }}>
+      <TextField select variant='outlined' label='Scale' value={scale} onChange={(e) => setScale(e.target.value as 'log' | 'default')}>
+        <MenuItem value='default'>Default</MenuItem>
+        <MenuItem value='log'>Log</MenuItem>
+      </TextField>
       <AudioVisualizer
         udpRef={udpRef}
         audioContext={audioContext.current}

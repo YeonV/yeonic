@@ -4,6 +4,7 @@ import type { ZeroConfService } from 'capacitor-zeroconf'
 import useStore from '../store/useStore'
 // import { sendWledUdp } from '../plugins/wled'
 import { useEffect } from 'react'
+import qFetch from '../utils/qFetch'
 
 const ServiceCard = ({ service, onClick }: { service: ZeroConfService; onClick: () => void }) => {
   const theme = useTheme()
@@ -13,7 +14,7 @@ const ServiceCard = ({ service, onClick }: { service: ZeroConfService; onClick: 
 
   useEffect(() => {
     const getInfo = async () => {
-      const r = await fetch(`http://${service.ipv4Addresses[0]}:80/json/info`)
+      const r = await qFetch(`http://${service.ipv4Addresses[0]}:80/json/info`)
       const j = await r.json()
       if (j?.leds?.count)
         addOrUpdateDevice({
