@@ -4,6 +4,7 @@ import { getCapacitorElectronConfig, setupElectronDeepLinking } from '@capacitor
 import type { MenuItemConstructorOptions } from 'electron'
 import { app, MenuItem } from 'electron'
 import unhandled from 'electron-unhandled'
+import installExtension, { REDUX_DEVTOOLS } from 'electron-devtools-installer'
 // import { autoUpdater } from 'electron-updater'
 
 import { ElectronCapacitorApp, setupContentSecurityPolicy, setupReloadWatcher } from './setup'
@@ -42,6 +43,9 @@ if (!app.isPackaged) {
 (async () => {
   // Wait for electron app to be ready.
   await app.whenReady()
+  installExtension(REDUX_DEVTOOLS)
+    .then((name) => console.log(`Added Extension:  ${name}`))
+    .catch((err) => console.log('An error occurred: ', err))
   // Security - Set Content-Security-Policy based on whether or not we are in dev mode.
   setupContentSecurityPolicy(myCapacitorApp.getCustomURLScheme())
   // Initialize our app, build windows, and load content.
