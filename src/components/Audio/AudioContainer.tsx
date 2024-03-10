@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react'
 import AudioDataContainer from './AudioDataContainer'
 import useStore from '../../store/useStore'
-import { Button, MenuItem, Stack, TextField } from '@mui/material'
+import { Button, Card, CardContent, MenuItem, Stack, TextField } from '@mui/material'
 import { Pause, PlayArrow, Stop } from '@mui/icons-material'
 import { IUDP, startUDP, stopUDP } from '../../plugins/udp'
 
@@ -65,46 +65,50 @@ const AudioContainer: React.FC = () => {
 
   return (
     <Stack direction='column' spacing={2}>
-      <Stack direction='row' spacing={2}>
-        {audioDevices?.length > 0 && (
-          <TextField
-            select
-            variant='outlined'
-            label='Audio Input'
-            disabled={audioPlaying}
-            value={audioDevice || 'default'}
-            onChange={(e) => {
-              setAudioDevice(e.target.value)
-            }}
-          >
-            {audioDevices
-              .filter((cd) => cd.kind === 'audioinput')
-              .map((d, i) => (
-                <MenuItem key={i} value={d.deviceId}>
-                  {/* {d.kind === 'audioinput' ? <Mic /> : <Speaker />} */}
-                  {d.label}
-                </MenuItem>
-              ))}
-          </TextField>
-        )}
-        <Button onClick={togglePlay}>
-          {audioPlaying ? (
-            <>
-              <Pause />
-              Pause
-            </>
-          ) : (
-            <>
-              <PlayArrow />
-              Play
-            </>
-          )}
-        </Button>
-        <Button disabled={!audioPlaying} onClick={stopStream}>
-          <Stop />
-          Stop
-        </Button>
-      </Stack>
+      <Card>
+        <CardContent>
+          <Stack direction='row' spacing={2}>
+            {audioDevices?.length > 0 && (
+              <TextField
+                select
+                variant='outlined'
+                label='Audio Input'
+                disabled={audioPlaying}
+                value={audioDevice || 'default'}
+                onChange={(e) => {
+                  setAudioDevice(e.target.value)
+                }}
+              >
+                {audioDevices
+                  .filter((cd) => cd.kind === 'audioinput')
+                  .map((d, i) => (
+                    <MenuItem key={i} value={d.deviceId}>
+                      {/* {d.kind === 'audioinput' ? <Mic /> : <Speaker />} */}
+                      {d.label}
+                    </MenuItem>
+                  ))}
+              </TextField>
+            )}
+            <Button onClick={togglePlay}>
+              {audioPlaying ? (
+                <>
+                  <Pause />
+                  Pause
+                </>
+              ) : (
+                <>
+                  <PlayArrow />
+                  Play
+                </>
+              )}
+            </Button>
+            <Button disabled={!audioPlaying} onClick={stopStream}>
+              <Stop />
+              Stop
+            </Button>
+          </Stack>
+        </CardContent>
+      </Card>
       <AudioDataContainer
         audioDeviceId={audioDevice}
         fft={audioSettings.fft}

@@ -58,7 +58,11 @@ export default function FullScreenDialog({ title, open, setOpen }: { title: stri
           {renderIframe()}
         </Dialog>
       ) : (
-        <iframe title={title} src={`http://${service?.ipv4Addresses}:${service?.port}`} style={{ border: 0, width: '680px' }}></iframe>
+        <iframe
+          title={title}
+          src={`http://${service?.ipv4Addresses}:${service?.port}`}
+          style={{ border: 0, width: '421px', height: '100%', borderRadius: 5 }}
+        ></iframe>
       )}
     </React.Fragment>
   )

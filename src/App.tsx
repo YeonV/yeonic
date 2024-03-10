@@ -19,7 +19,13 @@ function App() {
         ...baseTheme,
         palette: {
           ...baseTheme.palette,
-          mode: darkMode ? 'dark' : 'light'
+          mode: darkMode ? 'dark' : 'light',
+          primary: {
+            main: '#005aa0'
+          },
+          secondary: {
+            main: '#5475a0'
+          }
         }
       }),
     [darkMode]
