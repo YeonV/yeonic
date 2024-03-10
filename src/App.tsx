@@ -9,9 +9,10 @@ import Download from './pages/Download'
 import Features from './pages/Features'
 import './App.css'
 import TopBar from './components/TopBar'
+import Dashboard from './pages/Dashboard'
 
 function App() {
-  const darkMode = useStore((state) => state.darkMode)
+  const darkMode = useStore((s) => s.ui.darkMode)
   const theme = useMemo(
     () =>
       createTheme({
@@ -31,6 +32,7 @@ function App() {
           <TopBar />
           <Routes>
             <Route path='/' element={<Home />} />
+            <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/download' element={<Download />} />
             <Route path='/features' element={<Features />} />
           </Routes>

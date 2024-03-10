@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useRef, useEffect } from 'react'
 import AudioDataContainer from './AudioDataContainer'
 import useStore from '../../store/useStore'
 import { Button, MenuItem, Stack, TextField } from '@mui/material'
@@ -6,24 +6,25 @@ import { Pause, PlayArrow, Stop } from '@mui/icons-material'
 import { IUDP, startUDP, stopUDP } from '../../plugins/udp'
 
 const AudioContainer: React.FC = () => {
-  const [isPlaying, setIsPlaying] = useState(false)
   const theStream = useRef<MediaStream | null>(null)
   const udpRef = useRef<IUDP | null>(null)
 
-  const audioDevice = useStore((state) => state.audioDevice)
-  const setAudioDevice = useStore((state) => state.setAudioDevice)
-  const audioDevices = useStore((state) => state.audioDevices)
-  const setAudioDevices = useStore((state) => state.setAudioDevices)
-  const audioSettings = useStore((state) => state.audioSettings)
-  // const setAudioSettings = useStore((state) => state.setAudioSettings)
+  const audioPlaying = useStore((s) => s.audio.audioPlaying)
+  const setAudioPlaying = useStore((s) => s.setAudioPlaying)
+  const audioDevice = useStore((s) => s.audio.audioDevice)
+  const setAudioDevice = useStore((s) => s.setAudioDevice)
+  const audioDevices = useStore((s) => s.audio.audioDevices)
+  const setAudioDevices = useStore((s) => s.setAudioDevices)
+  const audioSettings = useStore((s) => s.audio.audioSettings)
+  // const setAudioSettings = useStore((s) => s.audio.setAudioSettings)
 
   const togglePlay = () => {
-    setIsPlaying(!isPlaying)
+    setAudioPlaying(!audioPlaying)
   }
   const stopStream = () => {
     theStream.current?.getTracks().forEach((track) => track.stop())
     setTimeout(() => {
-      setIsPlaying(false)
+      setAudioPlaying(false)
     }, 400)
   }
   useEffect(() => {
@@ -49,7 +50,7 @@ const AudioContainer: React.FC = () => {
         }
       }
     }
-    if (isPlaying) start()
+    if (audioPlaying) start()
     else if (udpRef.current) {
       stopUDP({ u: udpRef.current })
       udpRef.current = null
@@ -60,7 +61,7 @@ const AudioContainer: React.FC = () => {
         udpRef.current = null
       }
     }
-  }, [isPlaying])
+  }, [audioPlaying])
 
   return (
     <Stack direction='column' spacing={2}>
@@ -70,7 +71,7 @@ const AudioContainer: React.FC = () => {
             select
             variant='outlined'
             label='Audio Input'
-            disabled={isPlaying}
+            disabled={audioPlaying}
             value={audioDevice || 'default'}
             onChange={(e) => {
               setAudioDevice(e.target.value)
@@ -87,7 +88,7 @@ const AudioContainer: React.FC = () => {
           </TextField>
         )}
         <Button onClick={togglePlay}>
-          {isPlaying ? (
+          {audioPlaying ? (
             <>
               <Pause />
               Pause
@@ -99,7 +100,7 @@ const AudioContainer: React.FC = () => {
             </>
           )}
         </Button>
-        <Button disabled={!isPlaying} onClick={stopStream}>
+        <Button disabled={!audioPlaying} onClick={stopStream}>
           <Stop />
           Stop
         </Button>
@@ -109,7 +110,7 @@ const AudioContainer: React.FC = () => {
         fft={audioSettings.fft}
         bandCount={audioSettings.bands}
         theStream={theStream}
-        isPlaying={isPlaying}
+        audioPlaying={audioPlaying}
         udpRef={udpRef}
         videoDevice='none'
       />

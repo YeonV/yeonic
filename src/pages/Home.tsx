@@ -13,14 +13,14 @@ const logDeviceInfo = async () => await Device.getInfo()
 
 function Home() {
   const theme = useTheme()
-  const info = useStore((state) => state.info)
-  const setInfo = useStore((state) => state.setInfo)
+  const info = useStore((s) => s.plugins.info)
+  const setInfo = useStore((s) => s.setInfo)
 
   useEffect(() => {
     logDeviceInfo().then((i) => {
       setInfo(i)
     })
-  }, [])
+  }, [setInfo])
 
   return (
     <div className='content'>

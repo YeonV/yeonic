@@ -9,7 +9,7 @@ interface AudioDataContainerProps {
   bandCount: number
   videoDevice?: string
   theStream: React.MutableRefObject<MediaStream | null>
-  isPlaying: boolean
+  audioPlaying: boolean
   udpRef: React.MutableRefObject<IUDP | null>
 }
 function logScale(index: number, total: number, base = 2) {
@@ -18,7 +18,7 @@ function logScale(index: number, total: number, base = 2) {
   return Math.pow(base, exp) - 1
 }
 
-const AudioDataContainer: React.FC<AudioDataContainerProps> = ({ udpRef, audioDeviceId, fft, bandCount, videoDevice = 'none', theStream, isPlaying }) => {
+const AudioDataContainer: React.FC<AudioDataContainerProps> = ({ udpRef, audioDeviceId, fft, bandCount, videoDevice = 'none', theStream, audioPlaying }) => {
   const [frequencyBandArray] = useState<number[]>(Array.from({ length: bandCount }, (_, i) => i))
   const audioData = useRef<AnalyserNode | null>(null)
   const audioContext = useRef<AudioContext | null>(new AudioContext())
@@ -99,18 +99,18 @@ const AudioDataContainer: React.FC<AudioDataContainerProps> = ({ udpRef, audioDe
       return null
     }
 
-    if (isPlaying) initializeAudioAnalyser()
-  }, [audioDeviceId, fft, videoDevice, theStream, isPlaying])
+    if (audioPlaying) initializeAudioAnalyser()
+  }, [audioDeviceId, fft, videoDevice, theStream, audioPlaying])
 
   useEffect(() => {
-    if (isPlaying) {
-      // Resume the audio context when isPlaying is true
+    if (audioPlaying) {
+      // Resume the audio context when audioPlaying is true
       audioContext.current?.resume()
     } else {
-      // Suspend the audio context when isPlaying is false
+      // Suspend the audio context when audioPlaying is false
       audioContext.current?.suspend()
     }
-  }, [isPlaying])
+  }, [audioPlaying])
 
   const getFrequencyData = (styleAdjuster: (_arg0: Uint8Array) => void) => {
     if (!audioData.current) {
@@ -146,7 +146,7 @@ const AudioDataContainer: React.FC<AudioDataContainerProps> = ({ udpRef, audioDe
         audioContext={audioContext.current}
         frequencyBandArray={frequencyBandArray}
         getFrequencyData={getFrequencyData}
-        isPlaying={isPlaying}
+        audioPlaying={audioPlaying}
       />
     </div>
   )

@@ -4,11 +4,31 @@ import { ZeroConfService } from 'capacitor-zeroconf'
 import { DeviceInfo } from '@capacitor/device'
 
 const storePlugins = (set: any) => ({
-  services: [] as ZeroConfService[],
+  plugins: {
+    services: [] as ZeroConfService[],
+    activeService: '',
+    info: {
+      model: 'unknown',
+      platform: 'web',
+      operatingSystem: 'unknown',
+      osVersion: 'unknown',
+      manufacturer: 'unknown',
+      isVirtual: false,
+      webViewVersion: '121.0.0.0'
+    } as DeviceInfo
+  },
+  setActiveService: (service: string): void =>
+    set(
+      produce((state: IStore) => {
+        state.plugins.activeService = service
+      }),
+      false,
+      'services/setActiveService'
+    ),
   setServices: (newServices: ZeroConfService[]): void =>
     set(
       produce((state: IStore) => {
-        state.services = newServices
+        state.plugins.services = newServices
       }),
       false,
       'services/setServices'
@@ -16,7 +36,7 @@ const storePlugins = (set: any) => ({
   addS: (newService: ZeroConfService): void =>
     set(
       produce((state: IStore) => {
-        state.services.push(newService)
+        state.plugins.services.push(newService)
       }),
       false,
       'services/addService'
@@ -24,7 +44,7 @@ const storePlugins = (set: any) => ({
   removeService: (service: ZeroConfService): void =>
     set(
       produce((state: IStore) => {
-        state.services = state.services.filter((s) => s.name !== service.name)
+        state.plugins.services = state.plugins.services.filter((svc) => svc.name !== service.name)
       }),
       false,
       'services/removeService'
@@ -32,7 +52,7 @@ const storePlugins = (set: any) => ({
   clearServices: (): void =>
     set(
       produce((state: IStore) => {
-        state.services = []
+        state.plugins.services = []
       }),
       false,
       'services/clearServices'
@@ -40,26 +60,17 @@ const storePlugins = (set: any) => ({
   addService: (service: ZeroConfService): void =>
     set(
       produce((state: IStore) => {
-        const index = state.services.findIndex((s) => s.name === service.name)
-        if (index === -1) state.services.push(service)
-        else state.services[index] = service
+        const index = state.plugins.services.findIndex((svc) => svc.name === service.name)
+        if (index === -1) state.plugins.services.push(service)
+        else state.plugins.services[index] = service
       }),
       false,
       'services/addService'
     ),
-  info: {
-    model: 'unknown',
-    platform: 'web',
-    operatingSystem: 'unknown',
-    osVersion: 'unknown',
-    manufacturer: 'unknown',
-    isVirtual: false,
-    webViewVersion: '121.0.0.0'
-  } as DeviceInfo,
   setInfo: (newInfo: DeviceInfo): void =>
     set(
       produce((state: IStore) => {
-        state.info = newInfo
+        state.plugins.info = newInfo
       }),
       false,
       'info/setInfo'

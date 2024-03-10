@@ -8,9 +8,10 @@ import qFetch from '../utils/qFetch'
 
 const ServiceCard = ({ service, onClick }: { service: ZeroConfService; onClick: () => void }) => {
   const theme = useTheme()
-  const removeService = useStore((state) => state.removeService)
-  const devices = useStore((state) => state.devices)
-  const addOrUpdateDevice = useStore((state) => state.addOrUpdateDevice)
+  const removeService = useStore((s) => s.removeService)
+  const devices = useStore((s) => s.devices.devices)
+  const addOrUpdateDevice = useStore((s) => s.addOrUpdateDevice)
+  const activeService = useStore((s) => s.plugins.activeService)
 
   useEffect(() => {
     const getInfo = async () => {
@@ -25,18 +26,19 @@ const ServiceCard = ({ service, onClick }: { service: ZeroConfService; onClick: 
           ledCount: j.leds.count
         })
     }
-    if (!devices.find((d) => d.ip === service.ipv4Addresses[0])) {
+    if (!devices?.find((d) => d.ip === service.ipv4Addresses[0])) {
       getInfo()
     }
-  }, [devices, service, addOrUpdateDevice])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [service, addOrUpdateDevice])
 
-  // const device = devices.find((d) => d.ip === service.ipv4Addresses[0])
+  const device = devices.find((d) => d.ip === service.ipv4Addresses[0])
 
   return (
     <Card key={service.name} elevation={5}>
       <Stack
         color={theme.palette.secondary.contrastText}
-        bgcolor={theme.palette.secondary.main}
+        bgcolor={activeService === service.name ? theme.palette.primary.main : theme.palette.secondary.main}
         borderRadius={'4px 4px 0 0'}
         direction={'row'}
         justifyContent={'space-between'}
@@ -67,6 +69,22 @@ const ServiceCard = ({ service, onClick }: { service: ZeroConfService; onClick: 
           <Typography>Service Type</Typography>
           <Typography>{service.type}</Typography>
         </Stack>
+        {device && (
+          <>
+            <Stack direction={'row'} justifyContent={'space-between'}>
+              <Typography>Device Name</Typography>
+              <Typography>{device?.name}</Typography>
+            </Stack>
+            <Stack direction={'row'} justifyContent={'space-between'}>
+              <Typography>Led Count</Typography>
+              <Typography>{device?.ledCount}</Typography>
+            </Stack>
+            <Stack direction={'row'} justifyContent={'space-between'}>
+              <Typography>Device Type</Typography>
+              <Typography>{device?.type}</Typography>
+            </Stack>
+          </>
+        )}
       </CardContent>
     </Card>
   )

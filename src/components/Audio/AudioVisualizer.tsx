@@ -7,25 +7,25 @@ import Effect, { effects } from '../../effects/Effect'
 import { Visualizer } from './Visualizer/Visualizer'
 import type { AudioVisualizerProps } from './AudioVisualizer.props'
 
-const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext, frequencyBandArray, getFrequencyData, isPlaying }) => {
+const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext, frequencyBandArray, getFrequencyData, audioPlaying }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const timeStarted = useRef<number | null>(null)
   const animationFrameId = useRef<number | null>(null)
   const [visualizationType, setVisualizationType] = useState<keyof typeof Visualizer>('bars')
   const [protocol, setProtocol] = useState<'udp' | 'ddp'>('ddp')
-  const devices = useStore((state) => state.devices)
-  const color = useStore((state) => state.color)
-  const setColor = useStore((state) => state.setColor)
-  const bgColor = useStore((state) => state.bgColor)
-  const setBgColor = useStore((state) => state.setBgColor)
-  const minVolume = useStore((state) => state.minVolume)
-  const setMinVolume = useStore((state) => state.setMinVolume)
-  const selectedBands = useStore((state) => state.selectedBands)
-  const setSelectedBands = useStore((state) => state.setSelectedBands)
-  const effect = useStore((state) => state.effect)
-  const setEffect = useStore((state) => state.setEffect)
-  const gcolor = useStore((state) => state.gcolor)
-  const setGcolor = useStore((state) => state.setGcolor)
+  const devices = useStore((s) => s.devices.devices)
+  const color = useStore((s) => s.effects.color)
+  const setColor = useStore((s) => s.setColor)
+  const bgColor = useStore((s) => s.effects.bgColor)
+  const setBgColor = useStore((s) => s.setBgColor)
+  const effect = useStore((s) => s.effects.effect)
+  const setEffect = useStore((s) => s.setEffect)
+  const gcolor = useStore((s) => s.effects.gcolor)
+  const setGcolor = useStore((s) => s.setGcolor)
+  const minVolume = useStore((s) => s.audio.minVolume)
+  const setMinVolume = useStore((s) => s.setMinVolume)
+  const selectedBands = useStore((s) => s.audio.selectedBands)
+  const setSelectedBands = useStore((s) => s.setSelectedBands)
   const [selectedDevices, setSelectedDevices] = useState<string[]>([])
   const [smooth, setSmooth] = useState<'yes' | 'no'>('no')
 
@@ -39,7 +39,7 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
     const renderFrame = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      if (isPlaying) {
+      if (audioPlaying) {
         getFrequencyData((amplitudeArray) => {
           const config = {
             canvas,
@@ -56,7 +56,7 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
               type: effect,
               config: {
                 ampValues: Array.from(amplitudeArray),
-                pixel_count: devices.find((d) => d.ip === ip)?.ledCount || 297,
+                pixel_count: devices?.find((d) => d.ip === ip)?.ledCount || 297,
                 color,
                 bgColor,
                 gcolor,
@@ -87,7 +87,7 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
       animationFrameId.current = requestAnimationFrame(renderFrame)
     }
 
-    if (isPlaying) {
+    if (audioPlaying) {
       renderFrame()
     } else if (animationFrameId.current) {
       cancelAnimationFrame(animationFrameId.current)
@@ -105,7 +105,7 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
     frequencyBandArray,
     gcolor,
     getFrequencyData,
-    isPlaying,
+    audioPlaying,
     minVolume,
     selectedBands,
     visualizationType,
@@ -187,12 +187,12 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
             renderValue={(selected) => (
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                 {selected.map((value) => (
-                  <Chip key={value} label={devices.find((d) => d.ip === value)?.name} />
+                  <Chip key={value} label={devices?.find((d) => d.ip === value)?.name} />
                 ))}
               </Box>
             )}
           >
-            {devices.map((device) => (
+            {devices?.map((device) => (
               <MenuItem key={device.ip} value={device.ip}>
                 {device.name}
               </MenuItem>

@@ -11,7 +11,7 @@ import { ZeroConfService } from 'capacitor-zeroconf'
 import AudioContainer from '../components/Audio/AudioContainer'
 // import { WledDdpDevice } from '../plugins/WledDdpDevice'
 
-const Features = () => {
+const Dashboard = () => {
   const theme = useTheme()
   const platform = Capacitor.getPlatform()
   const mobile = ['ios', 'android'].includes(platform)
@@ -45,6 +45,7 @@ const Features = () => {
   // console.log('audiotest', audioDevices)
   return (
     <div className='content' style={{ justifyContent: 'flex-start' }}>
+      DB
       <Stack direction={'row'} spacing={3}>
         <Stack direction={'column'} spacing={3}>
           {Capacitor.isNativePlatform() && (
@@ -170,4 +171,4 @@ const Features = () => {
   )
 }
 
-export default Features
+export default Dashboard

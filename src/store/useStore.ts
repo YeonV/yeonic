@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { devtools, combine, persist } from 'zustand/middleware'
 import storeUI from './storeUI'
+import storeEffects from './storeEffects'
 import storeBears from './storeBear'
 import storePlugins from './storePlugins'
 import storeAudio from './storeAudio'
@@ -15,10 +16,11 @@ const useStore = create(
         },
         (set) => ({
           ...storeUI(set),
-          ...storeBears(set),
+          ...storeAudio(set),
+          ...storeEffects(set),
           ...storePlugins(set),
           ...storeDevices(set),
-          ...storeAudio(set),
+          ...storeBears(set)
           // user: storeUser(set),
           // ...storeCloud(set)
         })
