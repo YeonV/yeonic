@@ -5,13 +5,18 @@ import ReactGPicker from 'react-gcolor-picker'
 import classes from '../styles/GradientPicker.styles'
 import { Box, useTheme } from '@mui/material'
 
-const ColorPicker = ({ color, onChange, disabled, label, gradient }: {
-  color: { r: number, g: number, b: number } | string
+const ColorPicker = ({
+  color,
+  onChange,
+  disabled,
+  label,
+  gradient
+}: {
+  color: { r: number; g: number; b: number } | string
   onChange: any
   disabled?: boolean
   label: string
   gradient?: boolean
-
 }) => {
   const theme = useTheme()
   const [isOpen, toggle] = useState(false)
@@ -51,7 +56,8 @@ const ColorPicker = ({ color, onChange, disabled, label, gradient }: {
           border: '2px solid #555',
           boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(0, 0, 0, 0.1)',
           cursor: 'pointer',
-          background: (typeof color === 'string' && gradient) ? color : (typeof color !== 'string') ? `rgb(${color.r}, ${color.g}, ${color.b})` : color
+          background: typeof color === 'string' && gradient ? color : typeof color !== 'string' ? `rgb(${color.r}, ${color.g}, ${color.b})` : color,
+          boxSizing: 'border-box'
         }}
         onClick={() => {
           toggle(true)
@@ -111,8 +117,8 @@ const ColorPicker = ({ color, onChange, disabled, label, gradient }: {
               defaultActiveTab={'gradient'}
               defaultColors={gcolors}
             />
-          ) : typeof color !== 'string' && (
-            <RgbColorPicker color={color} onChange={onChange} />
+          ) : (
+            typeof color !== 'string' && <RgbColorPicker color={color} onChange={onChange} />
           )}
         </Box>
       )}

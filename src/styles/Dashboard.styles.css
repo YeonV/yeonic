@@ -1,0 +1,37 @@
+.dashboard .wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 1rem;
+    flex-wrap: wrap;
+}
+.dashboard .wrapper .col1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    width: 680;
+}
+.dashboard .wrapper .col2and3 {    
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-width: 821px;
+    align-self: stretch;
+}
+.dashboard .wrapper .col2and3 .col2 {   
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 1rem;
+    min-width: 400px;
+    align-self: stretch;
+}
+.dashboard .wrapper .col2and3 .col3 {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 1rem;
+    min-width: 421px;
+    align-self: stretch;
+}

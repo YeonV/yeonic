@@ -1,57 +1,39 @@
-import type { ZeroConfService } from 'capacitor-zeroconf'
-import { ChevronLeft, ChevronRight, Delete, ExpandMore } from '@mui/icons-material'
+import type { DeviceProps } from '../store/storeDevices'
+import { ChevronLeft, ChevronRight, Delete, DragIndicator, ExpandMore } from '@mui/icons-material'
 import { Accordion, AccordionDetails, AccordionSummary, IconButton, Stack, Typography, useTheme } from '@mui/material'
-import { useEffect } from 'react'
 import useStore from '../store/useStore'
-import qFetch from '../utils/qFetch'
+import { ZeroConfService } from 'capacitor-zeroconf'
 
-const DeviceCard = ({ service, onClick }: { service: ZeroConfService; onClick: () => void }) => {
+const DeviceCard = ({ device, onClick, dragHandleProps }: { device: DeviceProps; dragHandleProps: any; onClick: (s: ZeroConfService) => void }) => {
   const theme = useTheme()
   const removeService = useStore((s) => s.removeService)
-  const devices = useStore((s) => s.devices.devices)
-  const addOrUpdateDevice = useStore((s) => s.addOrUpdateDevice)
   const activeService = useStore((s) => s.plugins.activeService)
-
-  useEffect(() => {
-    const getInfo = async () => {
-      const r = await qFetch(`http://${service.ipv4Addresses[0]}:80/json/info`)
-      const j = await r.json()
-      if (j?.leds?.count)
-        addOrUpdateDevice({
-          name: service.name,
-          ip: service.ipv4Addresses[0],
-          port: service.port,
-          type: service.type,
-          ledCount: j.leds.count
-        })
-    }
-    if (!devices?.find((d) => d.ip === service.ipv4Addresses[0])) {
-      getInfo()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [service, addOrUpdateDevice])
-
-  const device = devices.find((d) => d.ip === service.ipv4Addresses[0])
-  if (!device) return null
-
+  const removeDeviceByIp = useStore((s) => s.removeDeviceByIp)
+  const services = useStore((s) => s.plugins.services)
+  const service = services.find((s) => s.name === device.name)
   return (
     <Accordion>
       <AccordionSummary
         expandIcon={<ExpandMore />}
         sx={{
-          bgcolor: activeService === service.name ? theme.palette.primary.main : '',
-          color: activeService === service.name ? theme.palette.primary.contrastText : ''
+          bgcolor: activeService === device.name ? theme.palette.primary.main : '',
+          color: activeService === device.name ? theme.palette.primary.contrastText : ''
         }}
       >
-        <Stack direction={'row'} justifyContent={'space-between'} width={'100%'}>
-          <Typography variant='h6'>{device.name}</Typography>
+        <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
+          <Stack direction={'row'} alignItems={'center'} spacing={2}>
+            <div style={{ display: 'flex' }} {...dragHandleProps}>
+              <DragIndicator />
+            </div>
+            <Typography variant='h6'>{device.name}</Typography>
+          </Stack>
           <IconButton
             onClick={(e) => {
               e.stopPropagation()
-              onClick()
+              if (service) onClick(service)
             }}
           >
-            {activeService === service.name ? <ChevronLeft /> : <ChevronRight />}
+            {activeService === device.name ? <ChevronLeft /> : <ChevronRight />}
           </IconButton>
         </Stack>
       </AccordionSummary>
@@ -61,8 +43,12 @@ const DeviceCard = ({ service, onClick }: { service: ZeroConfService; onClick: (
             <Typography>Led Count</Typography>
             <Typography>{device.ledCount}</Typography>
           </Stack>
-
-          <IconButton onClick={() => removeService(service)}>
+          <IconButton
+            onClick={() => {
+              removeDeviceByIp(device.ip)
+              if (service) removeService(service)
+            }}
+          >
             <Delete />
           </IconButton>
         </Stack>
