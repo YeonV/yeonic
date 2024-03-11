@@ -2,11 +2,11 @@ PODS:
   - Blade86CapacitorUdp (0.5.43):
     - Capacitor
     - CocoaAsyncSocket
-  - Capacitor (5.7.1):
+  - Capacitor (5.7.2):
     - CapacitorCordova
   - CapacitorCommunityScreenBrightness (5.0.0):
     - Capacitor
-  - CapacitorCordova (5.7.1)
+  - CapacitorCordova (5.7.2)
   - CapacitorDevice (5.0.7):
     - Capacitor
   - CapacitorLocalNotifications (5.0.7):
@@ -16,7 +16,7 @@ PODS:
   - CapacitorZeroconf (2.0.0):
     - Capacitor
   - CocoaAsyncSocket (7.6.5)
-  - CordovaPlugins (5.7.1):
+  - CordovaPlugins (5.7.2):
     - CapacitorCordova
   - MozartecCapacitorMicrophone (5.0.0):
     - Capacitor
@@ -61,15 +61,15 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Blade86CapacitorUdp: 45d49e2bf1414888d9964b3e3fa93ec50ae73552
-  Capacitor: 6bd16626bc7a4a382eff16f6aed0072fe9776951
+  Capacitor: fc7ef6d935eafb0df9eaaf109ca69be16c51a2d2
   CapacitorCommunityScreenBrightness: b2d9c6fffee6b684994cd69f727f2090e2f05c6d
-  CapacitorCordova: b49f3372270c88fd9c633a4fc8c7ef00e47dd2d6
+  CapacitorCordova: 70b13b8fddb6f35d8adcfe06cb5045c07f35f6de
   CapacitorDevice: fc91bdb484dc0e70755e9b621cd557afe642613a
   CapacitorLocalNotifications: c58afadd159f6bc540ef9b3cbdbc82510a2bf112
   CapacitorToast: c8bb89eeb59a23c1fc298f138cc06c8ff4d90ac1
   CapacitorZeroconf: 310daf09c97a6897e7bdd91e68a70faac36a440a
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
-  CordovaPlugins: f0e3d192a4357b614e24d18667a5bf4258094337
+  CordovaPlugins: e79b310121686e0085527a0d05c774f2b171f135
   MozartecCapacitorMicrophone: 78fa61dd3a64f2f017602bff9f51f88acb872a4c
 
 PODFILE CHECKSUM: d67500a6fb7702203b86e35eccf410c61339766f

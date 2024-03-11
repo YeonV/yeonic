@@ -38,7 +38,7 @@ const Dashboard = () => {
   return (
     <Box flexGrow={1} className='dashboard'>
       <div className='wrapper'>
-        <div className='col1'>
+        <div className='col1'>          
           <AudioContainer />
         </div>
 
