@@ -3,7 +3,7 @@ import { RgbColorPicker } from 'react-colorful'
 import useClickOutside from '../plugins/useClickOutside'
 import ReactGPicker from 'react-gcolor-picker'
 import classes from '../styles/GradientPicker.styles'
-import { Box, useTheme } from '@mui/material'
+import { Box, useMediaQuery, useTheme } from '@mui/material'
 
 const ColorPicker = ({
   color,
@@ -21,6 +21,7 @@ const ColorPicker = ({
   const theme = useTheme()
   const [isOpen, toggle] = useState(false)
   const popover = useRef<HTMLElement | null>(null)
+  const breakMedium = useMediaQuery('(max-width: 640px)')
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [gcolors, _setGcolors] = useState([
@@ -42,14 +43,14 @@ const ColorPicker = ({
   useClickOutside(popover, close)
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', width: breakMedium ? '33%' : '' }}>
       <div
         style={{
-          width: '56px',
+          width: breakMedium ? '100%' : '68px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          height: '56px',
+          height: '65px',
           borderRadius: '8px',
           opacity: disabled ? 0.2 : 1,
           pointerEvents: disabled ? 'none' : 'auto',

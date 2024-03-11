@@ -12,6 +12,12 @@
   padding-bottom: 55px;
   max-height: 100vh;  
 }
+@media screen and (max-width: 600px) {
+  #root {
+    padding-top: 56px;
+  }
+  
+}
 
 body {
   margin: 0;

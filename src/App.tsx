@@ -42,6 +42,7 @@ function App() {
             {Capacitor.isNativePlatform() && <Route path='/' element={<Dashboard />} />}
             <Route path='/download' element={<Download />} />
             <Route path='/features' element={<Features />} />
+            {Capacitor.isNativePlatform() && <Route path='/about' element={<Home />} />}
           </Routes>
           <Navigation />
         </main>

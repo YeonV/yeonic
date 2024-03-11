@@ -18,9 +18,12 @@ const Dashboard = () => {
   const devices = useStore((s) => s.devices.devices)
   const services = useStore((s) => s.plugins.services)
   const activeService = useStore((s) => s.plugins.activeService)
-  const breakMedium = useMediaQuery('(max-width: 1350px)')
+  // const breakMedium = useMediaQuery('(max-width: 1350px)')
   const serviceType = '_http._tcp.'
   const domain = 'local.'
+  const breakSmall = useMediaQuery('(max-width: 480px)')
+  // const breakMedium = useMediaQuery('(max-width: 640px)')
+  const breakLarge = useMediaQuery('(max-width: 1200px)')
 
   const handleServiceClick = (service: ZeroConfService) => {
     if (service.name === activeService) setActiveService('')
@@ -39,10 +42,16 @@ const Dashboard = () => {
           <AudioContainer />
         </div>
 
-        <div className='col2and3' style={{ flexGrow: breakMedium ? 1 : 0 }}>
-          <div className='col2' style={{ flexGrow: breakMedium ? 1 : 0 }}>
+        <div className='col2and3' style={{ minWidth: activeService === '' ? 'min(400px, 95vw)' : 'min(821px, 95vw)' }}>
+          <div className='col2'>
             <Stack direction={'column'} flexGrow={1} spacing={2}>
-              <Card>
+              <Card
+                sx={{
+                  overflow: 'unset',
+                  width: breakLarge && activeService === '' ? `min(700px, calc(95vw - ${breakSmall ? 0 : 44}px))` : 'auto',
+                  margin: '2rem auto 0'
+                }}
+              >
                 <CardContent>
                   <Stack direction={'row'} justifyContent={'space-between'} spacing={2}>
                     <Button
@@ -99,9 +108,11 @@ const Dashboard = () => {
               </DragDropContext>
             </Stack>
           </div>
-          <div className='col3'>
-            <FullScreenDialog title={activeService} open={activeService !== ''} setOpen={setActiveService} />
-          </div>
+          {activeService !== '' && (
+            <div className='col3'>
+              <FullScreenDialog title={activeService} open={activeService !== ''} setOpen={setActiveService} />
+            </div>
+          )}
         </div>
       </div>
     </Box>

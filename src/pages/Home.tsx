@@ -24,8 +24,8 @@ function Home() {
 
   return (
     <div className='content'>
-      <Stack direction={'column'} spacing={3}>
-        <Grid container justifyContent={'center'} spacing={1} maxWidth={550}>
+      <Stack direction={'column'} spacing={3} maxWidth={'95vw'}>
+        <Grid container justifyContent={'center'} spacing={1} maxWidth={550} paddingTop={2}>
           {techs.map((t) => (
             <Grid item key={t}>
               <Badge text={t} />

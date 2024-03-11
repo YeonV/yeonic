@@ -1,4 +1,4 @@
-import { Dashboard, DeveloperMode, Download, Home } from '@mui/icons-material'
+import { Dashboard, DeveloperMode, Download, Home, Info } from '@mui/icons-material'
 import { Badge, BottomNavigation, BottomNavigationAction, Paper } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -63,6 +63,7 @@ const Navigation = () => {
             }
           />
         )}
+        {Capacitor.isNativePlatform() && <BottomNavigationAction onClick={() => navigate('/about')} label='About' icon={<Info />} />}
         {!Capacitor.isNativePlatform() && <BottomNavigationAction onClick={() => navigate('/features')} label='Features' icon={<DeveloperMode />} />}
       </BottomNavigation>
     </Paper>

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react'
 import AudioDataContainer from './AudioDataContainer'
 import useStore from '../../store/useStore'
-import { Button, Card, CardContent, MenuItem, Stack, TextField } from '@mui/material'
+import { Button, Card, CardContent, MenuItem, Stack, TextField, useMediaQuery } from '@mui/material'
 import { Pause, PlayArrow, Stop } from '@mui/icons-material'
 import { IUDP, startUDP, stopUDP } from '../../plugins/udp'
 
@@ -17,6 +17,7 @@ const AudioContainer: React.FC = () => {
   const setAudioDevices = useStore((s) => s.setAudioDevices)
   const audioSettings = useStore((s) => s.audio.audioSettings)
   // const setAudioSettings = useStore((s) => s.audio.setAudioSettings)
+  const breakSmall = useMediaQuery('(max-width: 480px)')
 
   const togglePlay = () => {
     setAudioPlaying(!audioPlaying)
@@ -64,8 +65,8 @@ const AudioContainer: React.FC = () => {
   }, [audioPlaying])
 
   return (
-    <Stack direction='column' spacing={2}>
-      <Card>
+    <Stack direction='column' spacing={2} maxWidth={`min(700px, calc(95vw - ${breakSmall ? 0 : 44}px))`}>
+      <Card sx={{ overflow: 'unset', width: `min(700px, calc(95vw - ${breakSmall ? 0 : 44}px))`, margin: '2rem auto 0' }}>
         <CardContent>
           <Stack direction='row' spacing={2}>
             {audioDevices?.length > 0 && (

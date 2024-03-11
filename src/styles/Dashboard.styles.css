@@ -1,3 +1,6 @@
+.dashboard {
+    padding-bottom: 32px;
+}
 .dashboard .wrapper {
     display: flex;
     justify-content: center;
@@ -10,13 +13,14 @@
     justify-content: center;
     align-items: center;
     padding: 1rem;
-    width: 680;
+    width: 680px;
+    max-width: 95vw;
 }
 .dashboard .wrapper .col2and3 {    
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    min-width: 821px;
+    min-width: min(842px, 95vw);
     align-self: stretch;
 }
 .dashboard .wrapper .col2and3 .col2 {   
@@ -24,7 +28,8 @@
     justify-content: center;
     align-items: flex-start;
     padding: 1rem;
-    min-width: 400px;
+    min-width: min(421px, 95vw);
+    max-width: 720px;
     align-self: stretch;
 }
 .dashboard .wrapper .col2and3 .col3 {
@@ -32,6 +37,6 @@
     justify-content: center;
     align-items: flex-start;
     padding: 1rem;
-    min-width: 421px;
+    min-width: min(421px, 95vw);
     align-self: stretch;
 }

@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   Chip,
-  Divider,
   FormControl,
   InputLabel,
   MenuItem,
@@ -11,7 +10,8 @@ import {
   Select,
   Slider,
   Stack,
-  TextField
+  TextField,
+  useMediaQuery
   // Typography
 } from '@mui/material'
 import React, { useRef, useEffect, useState } from 'react'
@@ -44,6 +44,8 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
   const setSelectedBands = useStore((s) => s.setSelectedBands)
   const [selectedDevices, setSelectedDevices] = useState<string[]>([])
   const [smooth, setSmooth] = useState<'yes' | 'no'>('no')
+  const breakSmall = useMediaQuery('(max-width: 480px)')
+  const breakMedium = useMediaQuery('(max-width: 640px)')
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -134,7 +136,7 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
 
   return (
     <>
-      <Card>
+      <Card sx={{ overflow: 'unset', width: `min(700px, calc(95vw - ${breakSmall ? 0 : 44}px))`, margin: '2rem auto 0' }}>
         <CardContent>
           {!Capacitor.isNativePlatform() && (
             <TextField
@@ -179,31 +181,45 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
           </Stack>
         </CardContent>
       </Card>
-      <Divider sx={{ p: '1rem 0' }} />
-      <Card sx={{ overflow: 'unset' }}>
+      <Card sx={{ overflow: 'unset', width: `min(700px, calc(95vw - ${breakSmall ? 0 : 44}px))`, margin: '2rem auto 0' }}>
         <CardContent>
           <Stack direction='column' spacing={2}>
             {/* <Typography textAlign={'left'} variant='h6' pb={2}>
               WLED
             </Typography> */}
-            <Stack direction='row' spacing={2}>
-              <TextField select variant='outlined' label='Effect' value={effect} onChange={(e) => setEffect(e.target.value)}>
+            <Stack direction='row' spacing={2} flexWrap={'wrap'}>
+              <TextField
+                select
+                variant='outlined'
+                label='Effect'
+                value={effect}
+                onChange={(e) => setEffect(e.target.value)}
+                sx={{ 'flexGrow': 1, 'minWidth': 280, '& .MuiInputBase-root': { height: 65 } }}
+              >
                 {effects.map((effect) => (
                   <MenuItem key={effect} value={effect}>
                     {effect}
                   </MenuItem>
                 ))}
               </TextField>
-              <ColorPicker color={color} onChange={setColor} label='Color' />
-              <ColorPicker color={bgColor} onChange={setBgColor} label='BgColor' />
-              <ColorPicker color={gcolor} gradient onChange={setGcolor} label='GColor' />
+              <Stack
+                direction='row'
+                spacing={2}
+                width={breakMedium ? '100%' : 'auto'}
+                style={{ marginLeft: breakMedium ? 0 : '1rem', marginTop: breakMedium ? '1rem' : 0 }}
+              >
+                <ColorPicker color={color} onChange={setColor} label='Color' />
+                <ColorPicker color={bgColor} onChange={setBgColor} label='BgColor' />
+                <ColorPicker color={gcolor} gradient onChange={setGcolor} label='GColor' />
+              </Stack>
             </Stack>
-            <Stack direction='row' spacing={2}>
+            <Stack direction='row' spacing={2} flexWrap={'wrap'}>
               <FormControl sx={{ 'flexGrow': 1, '& .MuiInputBase-root': { height: 65 } }}>
                 <InputLabel id='send-to-label'>Send effect to</InputLabel>
                 <Select
                   labelId='send-to-label'
                   fullWidth
+                  sx={{ minWidth: 280 }}
                   id='send-to'
                   multiple
                   value={selectedDevices}
@@ -224,28 +240,35 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
                   ))}
                 </Select>
               </FormControl>
-              <TextField
-                select
-                variant='outlined'
-                label='Protocol'
-                value={protocol}
-                onChange={(e) => setProtocol(e.target.value as 'udp' | 'ddp')}
-                sx={{ 'maxWidth': '100%', 'minWidth': '100px', 'textAlign': 'left', 'height': 65, '& .MuiInputBase-root': { height: 65 } }}
+              <Stack
+                direction='row'
+                spacing={2}
+                width={breakMedium ? '100%' : 'auto'}
+                style={{ marginLeft: breakMedium ? 0 : '1rem', marginTop: breakMedium ? '1rem' : 0 }}
               >
-                <MenuItem value='udp'>UDP</MenuItem>
-                <MenuItem value='ddp'>DDP</MenuItem>
-              </TextField>
-              <TextField
-                select
-                variant='outlined'
-                label='Smooth'
-                value={smooth}
-                onChange={(e) => setSmooth(e.target.value as 'yes' | 'no')}
-                sx={{ 'maxWidth': '100%', 'minWidth': '100px', 'textAlign': 'left', '& .MuiInputBase-root': { height: 65 } }}
-              >
-                <MenuItem value={'yes'}>Yes</MenuItem>
-                <MenuItem value={'no'}>No</MenuItem>
-              </TextField>
+                <TextField
+                  select
+                  variant='outlined'
+                  label='Protocol'
+                  value={protocol}
+                  onChange={(e) => setProtocol(e.target.value as 'udp' | 'ddp')}
+                  sx={{ 'maxWidth': '100%', 'minWidth': '110px', 'textAlign': 'left', 'height': 65, '& .MuiInputBase-root': { height: 65 } }}
+                >
+                  <MenuItem value='udp'>UDP</MenuItem>
+                  <MenuItem value='ddp'>DDP</MenuItem>
+                </TextField>
+                <TextField
+                  select
+                  variant='outlined'
+                  label='Smooth'
+                  value={smooth}
+                  onChange={(e) => setSmooth(e.target.value as 'yes' | 'no')}
+                  sx={{ 'maxWidth': '100%', 'minWidth': '110px', 'textAlign': 'left', '& .MuiInputBase-root': { height: 65 } }}
+                >
+                  <MenuItem value={'yes'}>Yes</MenuItem>
+                  <MenuItem value={'no'}>No</MenuItem>
+                </TextField>
+              </Stack>
             </Stack>
           </Stack>
         </CardContent>
