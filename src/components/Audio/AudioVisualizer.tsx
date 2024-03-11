@@ -1,4 +1,19 @@
-import { Box, Chip, Divider, FormControl, InputLabel, MenuItem, OutlinedInput, Select, Slider, Stack, TextField, Typography } from '@mui/material'
+import {
+  Box,
+  Card,
+  CardContent,
+  Chip,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  Slider,
+  Stack,
+  TextField,
+  useMediaQuery
+  // Typography
+} from '@mui/material'
 import React, { useRef, useEffect, useState } from 'react'
 import ColorPicker from '../ColorPicker'
 import useStore from '../../store/useStore'
@@ -6,6 +21,7 @@ import { SendWledUdpProps, sendWledUdp, sendWledDdp } from '../../plugins/wled'
 import Effect, { effects } from '../../effects/Effect'
 import { Visualizer } from './Visualizer/Visualizer'
 import type { AudioVisualizerProps } from './AudioVisualizer.props'
+import { Capacitor } from '@capacitor/core'
 
 const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext, frequencyBandArray, getFrequencyData, audioPlaying }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -28,6 +44,8 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
   const setSelectedBands = useStore((s) => s.setSelectedBands)
   const [selectedDevices, setSelectedDevices] = useState<string[]>([])
   const [smooth, setSmooth] = useState<'yes' | 'no'>('no')
+  const breakSmall = useMediaQuery('(max-width: 480px)')
+  const breakMedium = useMediaQuery('(max-width: 640px)')
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -117,112 +135,145 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
   ])
 
   return (
-    <Stack direction='column' spacing={2}>
-      <Stack direction='row' spacing={2}>
-        <TextField
-          select
-          variant='outlined'
-          label='Visualization Type'
-          value={visualizationType}
-          onChange={(e) => setVisualizationType(e.target.value as keyof typeof Visualizer)}
-          style={{ maxWidth: '100%', minWidth: '150px', textAlign: 'left' }}
-        >
-          {Object.keys(Visualizer).map((type) => (
-            <MenuItem key={type} value={type}>
-              {type}
-            </MenuItem>
-          ))}
-        </TextField>
-      </Stack>
-      <Stack sx={{ height: 350 }} spacing={1} direction='row' alignItems={'baseline'}>
-        <Slider
-          value={minVolume}
-          onChange={(_e: Event, value: number | number[]) => setMinVolume(Array.isArray(value) ? value[0] : value)}
-          step={1}
-          min={0}
-          max={100}
-          valueLabelDisplay='auto'
-          orientation='vertical'
-          sx={{ height: 320 }}
-        />
-        <Stack spacing={1} direction='column' height={350} width={'100%'}>
-          <canvas ref={canvasRef} style={{ width: '100%' }} />
-          <Slider
-            defaultValue={selectedBands}
-            onChange={(_e: Event, value: number | number[]) => setSelectedBands(Array.isArray(value) ? value : [value, value])}
-            step={1}
-            min={0}
-            max={frequencyBandArray.length || 16}
-            valueLabelDisplay='auto'
-          />
-        </Stack>
-      </Stack>
-      <Divider sx={{ p: '1rem 0' }} />
-      <Typography textAlign={'left'} variant='h6' pb={2}>
-        WLED
-      </Typography>
-      <Stack direction='row' spacing={2}>
-        <TextField select variant='outlined' label='Effect' value={effect} onChange={(e) => setEffect(e.target.value)}>
-          {effects.map((effect) => (
-            <MenuItem key={effect} value={effect}>
-              {effect}
-            </MenuItem>
-          ))}
-        </TextField>
-        <ColorPicker color={color} onChange={setColor} label='Color' />
-        <ColorPicker color={bgColor} onChange={setBgColor} label='BgColor' />
-        <ColorPicker color={gcolor} gradient onChange={setGcolor} label='GColor' />
-      </Stack>
-      <Stack direction='row' spacing={2}>
-        <FormControl sx={{ flexGrow: 1 }}>
-          <InputLabel id='send-to-label'>Send effect to</InputLabel>
-          <Select
-            labelId='send-to-label'
-            fullWidth
-            id='send-to'
-            multiple
-            value={selectedDevices}
-            onChange={(e) => setSelectedDevices(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)}
-            input={<OutlinedInput id='select-multiple-chip' label='Send effect to' />}
-            renderValue={(selected) => (
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                {selected.map((value) => (
-                  <Chip key={value} label={devices?.find((d) => d.ip === value)?.name} />
+    <>
+      <Card sx={{ overflow: 'unset', width: `min(700px, calc(95vw - ${breakSmall ? 0 : 44}px))`, margin: '2rem auto 0' }}>
+        <CardContent>
+          {!Capacitor.isNativePlatform() && (
+            <TextField
+              select
+              variant='outlined'
+              label='Visualization Type'
+              value={visualizationType}
+              onChange={(e) => setVisualizationType(e.target.value as keyof typeof Visualizer)}
+              style={{ maxWidth: '100%', minWidth: '150px', textAlign: 'left' }}
+            >
+              {Object.keys(Visualizer).map((type) => (
+                <MenuItem key={type} value={type}>
+                  {type}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+          <Stack direction='column' spacing={2}>
+            <Stack sx={{ height: 350 }} spacing={1} direction='row' alignItems={'baseline'}>
+              <Slider
+                value={minVolume}
+                onChange={(_e: Event, value: number | number[]) => setMinVolume(Array.isArray(value) ? value[0] : value)}
+                step={1}
+                min={0}
+                max={100}
+                valueLabelDisplay='auto'
+                orientation='vertical'
+                sx={{ height: 320 }}
+              />
+              <Stack spacing={1} direction='column' height={350} width={'100%'}>
+                <canvas ref={canvasRef} style={{ width: '100%' }} />
+                <Slider
+                  defaultValue={selectedBands}
+                  onChange={(_e: Event, value: number | number[]) => setSelectedBands(Array.isArray(value) ? value : [value, value])}
+                  step={1}
+                  min={0}
+                  max={frequencyBandArray.length || 16}
+                  valueLabelDisplay='auto'
+                />
+              </Stack>
+            </Stack>
+          </Stack>
+        </CardContent>
+      </Card>
+      <Card sx={{ overflow: 'unset', width: `min(700px, calc(95vw - ${breakSmall ? 0 : 44}px))`, margin: '2rem auto 0' }}>
+        <CardContent>
+          <Stack direction='column' spacing={2}>
+            {/* <Typography textAlign={'left'} variant='h6' pb={2}>
+              WLED
+            </Typography> */}
+            <Stack direction='row' spacing={2} flexWrap={'wrap'}>
+              <TextField
+                select
+                variant='outlined'
+                label='Effect'
+                value={effect}
+                onChange={(e) => setEffect(e.target.value)}
+                sx={{ 'flexGrow': 1, 'minWidth': 280, '& .MuiInputBase-root': { height: 65 } }}
+              >
+                {effects.map((effect) => (
+                  <MenuItem key={effect} value={effect}>
+                    {effect}
+                  </MenuItem>
                 ))}
-              </Box>
-            )}
-          >
-            {devices?.map((device) => (
-              <MenuItem key={device.ip} value={device.ip}>
-                {device.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <TextField
-          select
-          variant='outlined'
-          label='Protocol'
-          value={protocol}
-          onChange={(e) => setProtocol(e.target.value as 'udp' | 'ddp')}
-          style={{ maxWidth: '100%', minWidth: '100px', textAlign: 'left' }}
-        >
-          <MenuItem value='udp'>UDP</MenuItem>
-          <MenuItem value='ddp'>DDP</MenuItem>
-        </TextField>
-      </Stack>
-      <TextField
-        select
-        variant='outlined'
-        label='Smooth'
-        value={smooth}
-        onChange={(e) => setSmooth(e.target.value as 'yes' | 'no')}
-        style={{ maxWidth: '100%', minWidth: '100px', textAlign: 'left' }}
-      >
-        <MenuItem value={'yes'}>Yes</MenuItem>
-        <MenuItem value={'no'}>No</MenuItem>
-      </TextField>
-    </Stack>
+              </TextField>
+              <Stack
+                direction='row'
+                spacing={2}
+                width={breakMedium ? '100%' : 'auto'}
+                style={{ marginLeft: breakMedium ? 0 : '1rem', marginTop: breakMedium ? '1rem' : 0 }}
+              >
+                <ColorPicker color={color} onChange={setColor} label='Color' />
+                <ColorPicker color={bgColor} onChange={setBgColor} label='BgColor' />
+                <ColorPicker color={gcolor} gradient onChange={setGcolor} label='GColor' />
+              </Stack>
+            </Stack>
+            <Stack direction='row' spacing={2} flexWrap={'wrap'}>
+              <FormControl sx={{ 'flexGrow': 1, '& .MuiInputBase-root': { height: 65 } }}>
+                <InputLabel id='send-to-label'>Send effect to</InputLabel>
+                <Select
+                  labelId='send-to-label'
+                  fullWidth
+                  sx={{ minWidth: 280 }}
+                  id='send-to'
+                  multiple
+                  value={selectedDevices}
+                  onChange={(e) => setSelectedDevices(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)}
+                  input={<OutlinedInput id='select-multiple-chip' label='Send effect to' />}
+                  renderValue={(selected) => (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                      {selected.map((value) => (
+                        <Chip key={value} label={devices?.find((d) => d.ip === value)?.name} />
+                      ))}
+                    </Box>
+                  )}
+                >
+                  {devices?.map((device) => (
+                    <MenuItem key={device.ip} value={device.ip}>
+                      {device.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <Stack
+                direction='row'
+                spacing={2}
+                width={breakMedium ? '100%' : 'auto'}
+                style={{ marginLeft: breakMedium ? 0 : '1rem', marginTop: breakMedium ? '1rem' : 0 }}
+              >
+                <TextField
+                  select
+                  variant='outlined'
+                  label='Protocol'
+                  value={protocol}
+                  onChange={(e) => setProtocol(e.target.value as 'udp' | 'ddp')}
+                  sx={{ 'maxWidth': '100%', 'minWidth': '110px', 'textAlign': 'left', 'height': 65, '& .MuiInputBase-root': { height: 65 } }}
+                >
+                  <MenuItem value='udp'>UDP</MenuItem>
+                  <MenuItem value='ddp'>DDP</MenuItem>
+                </TextField>
+                <TextField
+                  select
+                  variant='outlined'
+                  label='Smooth'
+                  value={smooth}
+                  onChange={(e) => setSmooth(e.target.value as 'yes' | 'no')}
+                  sx={{ 'maxWidth': '100%', 'minWidth': '110px', 'textAlign': 'left', '& .MuiInputBase-root': { height: 65 } }}
+                >
+                  <MenuItem value={'yes'}>Yes</MenuItem>
+                  <MenuItem value={'no'}>No</MenuItem>
+                </TextField>
+              </Stack>
+            </Stack>
+          </Stack>
+        </CardContent>
+      </Card>
+    </>
   )
 }
 

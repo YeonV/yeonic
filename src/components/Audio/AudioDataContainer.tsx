@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import AudioVisualizer from './AudioVisualizer'
 import { IUDP } from '../../plugins/udp'
 import { MenuItem, TextField } from '@mui/material'
+import { Capacitor } from '@capacitor/core'
 
 interface AudioDataContainerProps {
   audioDeviceId: string
@@ -23,7 +24,7 @@ const AudioDataContainer: React.FC<AudioDataContainerProps> = ({ udpRef, audioDe
   const audioData = useRef<AnalyserNode | null>(null)
   const audioContext = useRef<AudioContext | null>(new AudioContext())
   const theGain = useRef<GainNode | null>(null)
-  const [scale, setScale] = useState<'log' | 'default'>('log')
+  const [scale, setScale] = useState<'log' | 'default'>('default')
 
   useEffect(() => {
     const initializeAudioAnalyser = async () => {
@@ -137,10 +138,12 @@ const AudioDataContainer: React.FC<AudioDataContainerProps> = ({ udpRef, audioDe
 
   return (
     <div style={{ position: 'relative', top: 0 }}>
-      <TextField select variant='outlined' label='Scale' value={scale} onChange={(e) => setScale(e.target.value as 'log' | 'default')}>
-        <MenuItem value='default'>Default</MenuItem>
-        <MenuItem value='log'>Log</MenuItem>
-      </TextField>
+      {!Capacitor.isNativePlatform() && (
+        <TextField select variant='outlined' label='Scale' value={scale} onChange={(e) => setScale(e.target.value as 'log' | 'default')}>
+          <MenuItem value='default'>Default</MenuItem>
+          <MenuItem value='log'>Log</MenuItem>
+        </TextField>
+      )}
       <AudioVisualizer
         udpRef={udpRef}
         audioContext={audioContext.current}

@@ -6,14 +6,13 @@ import logo from '/logo.svg'
 import { useTheme } from '@mui/material'
 import { Menu } from '@mui/icons-material'
 import useStore from '../store/useStore'
-import { Capacitor } from '@capacitor/core'
 
 export default function TopBar({ position = 'fixed' }: { position?: 'absolute' | 'fixed' | 'relative' | 'static' | 'sticky' }) {
   const theme = useTheme()
   const info = useStore((s) => s.plugins.info)
 
   return (
-    <Box sx={{ flexGrow: Capacitor.isNativePlatform() ? 0 : 1, paddingTop: 5 }}>
+    <Box>
       <AppBar position={position}>
         <Toolbar sx={{ justifyContent: 'space-between', paddingTop: info.operatingSystem === 'ios' ? 6 : 0 }}>
           <img src={logoForeground} width={40} alt='logo' />

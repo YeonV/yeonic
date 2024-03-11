@@ -1,4 +1,4 @@
-import { Dashboard, DeveloperMode, Download, Home } from '@mui/icons-material'
+import { Dashboard, DeveloperMode, Download, Home, Info } from '@mui/icons-material'
 import { Badge, BottomNavigation, BottomNavigationAction, Paper } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -29,10 +29,10 @@ const Navigation = () => {
           setValue(newValue)
         }}
       >
-        <BottomNavigationAction onClick={() => navigate('/')} label='Home' icon={<Home />} />
+        {!Capacitor.isNativePlatform() && <BottomNavigationAction onClick={() => navigate('/')} label='Home' icon={<Home />} />}
         {Capacitor.isNativePlatform() && (
           <BottomNavigationAction
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/')}
             label={'Dashboard'}
             icon={
               <Badge invisible={!releases[0] || !semver.lt(version, releases[0].tag_name)} badgeContent={'!'} color='primary'>
@@ -52,7 +52,19 @@ const Navigation = () => {
             }
           />
         )}
-        <BottomNavigationAction onClick={() => navigate('/features')} label='Features' icon={<DeveloperMode />} />
+        {Capacitor.isNativePlatform() && !(!releases[0] || !semver.lt(version, releases[0].tag_name)) && (
+          <BottomNavigationAction
+            onClick={() => navigate('/download')}
+            label={'Update'}
+            icon={
+              <Badge badgeContent={'!'} color='primary'>
+                <Download />
+              </Badge>
+            }
+          />
+        )}
+        {Capacitor.isNativePlatform() && <BottomNavigationAction onClick={() => navigate('/about')} label='About' icon={<Info />} />}
+        {!Capacitor.isNativePlatform() && <BottomNavigationAction onClick={() => navigate('/features')} label='Features' icon={<DeveloperMode />} />}
       </BottomNavigation>
     </Paper>
   )

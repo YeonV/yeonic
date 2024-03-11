@@ -7,7 +7,7 @@ import { scanZeroconf } from '../plugins/zeroconf'
 import ServiceCard from '../components/ServiceCard'
 import { Capacitor } from '@capacitor/core'
 import FullScreenDialog from '../components/Dialogs/FullScreen'
-import { ZeroConfService } from 'capacitor-zeroconf'
+// import { ZeroConfService } from 'capacitor-zeroconf'
 import AudioContainer from '../components/Audio/AudioContainer'
 // import { WledDdpDevice } from '../plugins/WledDdpDevice'
 
@@ -37,10 +37,10 @@ const Features = () => {
   const [serviceType, setServiceType] = useState('_http._tcp.')
   const [domain, setDomain] = useState('local.')
 
-  const handleServiceClick = (service: ZeroConfService) => {
-    if (service.name === activeService) setActiveService('')
-    else setActiveService(service.name)
-  }
+  // const handleServiceClick = (service: ZeroConfService) => {
+  //   if (service.name === activeService) setActiveService('')
+  //   else setActiveService(service.name)
+  // }
 
   // console.log('audiotest', audioDevices)
   return (
@@ -81,7 +81,8 @@ const Features = () => {
                     </Button>
                   </Stack>
                   {services.map((s) => (
-                    <ServiceCard key={s.name} service={s} onClick={() => handleServiceClick(s)} />
+                    <ServiceCard key={s.name} service={s} />
+                    // <ServiceCard key={s.name} service={s} onClick={() => handleServiceClick(s)} />
                   ))}
                 </Stack>
               </AccordionDetails>

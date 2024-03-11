@@ -7,6 +7,7 @@ export interface DeviceProps {
   port: number
   type: string
   ledCount: number
+  order?: number
 }
 
 const storeDevices = (set: any) => ({
@@ -66,13 +67,38 @@ const storeDevices = (set: any) => ({
       produce((state: IStore) => {
         const index = state.devices.devices?.findIndex((d) => d.ip === device.ip) || -1
         if (index === -1) {
+          device.order = state.devices.devices.length
           state.devices.devices.push(device)
         } else {
-          state.devices.devices[index] = device
+          state.devices.devices[index] = { ...state.devices.devices[index], ...device }
         }
       }),
       false,
       'devices/addOrUpdateDevice'
+    ),
+  setOrder: (order: number, ip: string): void =>
+    set(
+      produce((state: IStore) => {
+        const index = state.devices.devices?.findIndex((d) => d.ip === ip) || -1
+        if (index !== -1) {
+          state.devices.devices[index].order = order
+        }
+      }),
+      false,
+      'devices/setOrder'
+    ),
+  swapOrder: (sourceIndex: number, destinationIndex: number): void =>
+    set(
+      produce((state: IStore) => {
+        const devices = state.devices.devices
+        const [removed] = devices.splice(sourceIndex, 1)
+        devices.splice(destinationIndex, 0, removed)
+        devices.forEach((d, i) => {
+          d.order = i
+        })
+      }),
+      false,
+      'devices/swapOrder'
     )
 })
 

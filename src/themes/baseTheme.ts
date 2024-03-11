@@ -4,7 +4,7 @@ export const baseTheme = {
       main: '#005aa0'
     },
     secondary: {
-      main: '#FFDC0F'
+      main: '#5475a0'
     }
   },
 
@@ -12,6 +12,13 @@ export const baseTheme = {
     MuiButton: {
       defaultProps: {
         variant: 'contained' as 'contained' | 'outlined' | 'text' | undefined
+      }
+    },
+    MuiCardContent: {
+      defaultProps: {
+        sx: {
+          '&:last-child': { paddingBottom: 2 }
+        }
       }
     }
   }
