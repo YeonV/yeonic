@@ -1,7 +1,7 @@
 {
   "name": "yeonic",
   "private": false,
-  "version": "0.1.4",
+  "version": "0.1.5",
   "type": "module",
   "author": {
     "name": "YeonV aka Blade",
@@ -25,7 +25,7 @@
     "mobile": "set NODE_ENV=production && run-script-os",
     "mobile:darwin": "npx cap run ios --external --target=66DD2162-E00C-4B8A-9426-4AC75CE957D1",
     "mobile:default": "npx cap sync android && npx cap run android --external",
-    "dev:desktop": "concurrently \"npx cap sync && npm run dev & npm run build -- --watch\" \"cd electron && node ./live-runner.js\" \"chokidar 'dist/**/*' -c 'cp -R dist/* electron/app/'\" --kill-others",    
+    "dev:desktop": "concurrently \"npx cap sync && npm run dev & npm run build -- --watch\" \"cd electron && node ./live-runner.js\" \"chokidar 'dist/**/*' -c 'cp -R dist/* electron/app/'\" --kill-others",
     "dev:mobile": "concurrently \"npx cap sync && vite --host\" \"run-script-os\" --kill-others",
     "dev:mobile:darwin": "set NODE_ENV=development && npx cap run ios --livereload --external --target=66DD2162-E00C-4B8A-9426-4AC75CE957D1 --watch",
     "dev:mobile:win": "set NODE_ENV=development && npx cap sync android && npx cap run android --livereload --external -p 3000",
