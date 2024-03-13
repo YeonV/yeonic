@@ -18,7 +18,7 @@ import React, { useRef, useEffect, useState } from 'react'
 import ColorPicker from '../ColorPicker'
 import useStore from '../../store/useStore'
 import { SendWledUdpProps, sendWledUdp, sendWledDdp } from '../../plugins/wled'
-import Effect, { effects } from '../../effects/Effect'
+import Effect, { effectNames } from '../../effects/Effect'
 import { Visualizer } from './Visualizer/Visualizer'
 import type { AudioVisualizerProps } from './AudioVisualizer.props'
 import { Capacitor } from '@capacitor/core'
@@ -42,7 +42,9 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
   const setMinVolume = useStore((s) => s.setMinVolume)
   const selectedBands = useStore((s) => s.audio.selectedBands)
   const setSelectedBands = useStore((s) => s.setSelectedBands)
-  const [selectedDevices, setSelectedDevices] = useState<string[]>([])
+  const selectedDevices = useStore((s) => s.selectedDevices)
+  const setSelectedDevices = useStore((s) => s.setSelectedDevices)
+  // const [selectedDevices, setSelectedDevices] = useState<string[]>([])
   const [smooth, setSmooth] = useState<'yes' | 'no'>('no')
   const breakSmall = useMediaQuery('(max-width: 480px)')
   const breakMedium = useMediaQuery('(max-width: 640px)')
@@ -70,19 +72,20 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
           Visualizer[visualizationType](amplitudeArray, config)
 
           selectedDevices.forEach((ip) => {
+            const device = devices?.find((d) => d.ip === ip)
             const pixels = Effect({
-              type: effect,
+              type: device?.effect?.name || effect,
               config: {
                 ampValues: Array.from(amplitudeArray),
-                pixel_count: devices?.find((d) => d.ip === ip)?.ledCount || 297,
-                color,
-                bgColor,
-                gcolor,
-                activeFb: selectedBands[0],
-                activeRightFb: selectedBands[1],
-                volume: minVolume,
-                timeStarted: timeStarted,
-                smooth: smooth === 'yes'
+                pixel_count: device?.ledCount || 297,
+                color: device?.effect?.config?.color || color,
+                bgColor: device?.effect?.config?.bgColor || bgColor,
+                gcolor: device?.effect?.config?.gcolor || gcolor,
+                bandStart: device?.effect?.config?.bandStart || selectedBands[0],
+                bandStop: device?.effect?.config?.bandStop || selectedBands[1],
+                minVolume: device?.effect?.config?.minVolume || minVolume,
+                timeStarted: device?.effect?.config?.timeStarted || timeStarted,
+                smooth: device?.effect?.config?.smooth || smooth === 'yes'
               }
             })
             if (udpRef.current) {
@@ -136,7 +139,7 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
 
   return (
     <>
-      <Card sx={{ overflow: 'unset', width: `min(700px, calc(95vw - ${breakSmall ? 0 : 44}px))`, margin: '2rem auto 0' }}>
+      <Card sx={{ overflow: 'unset', width: `min(700px, calc(95vw - ${breakSmall ? 0 : 44}px))`, margin: '0 auto' }}>
         <CardContent>
           {!Capacitor.isNativePlatform() && (
             <TextField
@@ -181,7 +184,7 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
           </Stack>
         </CardContent>
       </Card>
-      <Card sx={{ overflow: 'unset', width: `min(700px, calc(95vw - ${breakSmall ? 0 : 44}px))`, margin: '2rem auto 0' }}>
+      <Card sx={{ overflow: 'unset', width: `min(700px, calc(95vw - ${breakSmall ? 0 : 44}px))`, margin: '1rem auto 0' }}>
         <CardContent>
           <Stack direction='column' spacing={2}>
             {/* <Typography textAlign={'left'} variant='h6' pb={2}>
@@ -196,7 +199,7 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ udpRef, audioContext,
                 onChange={(e) => setEffect(e.target.value)}
                 sx={{ 'flexGrow': 1, 'minWidth': 280, '& .MuiInputBase-root': { height: 65 } }}
               >
-                {effects.map((effect) => (
+                {effectNames.map((effect) => (
                   <MenuItem key={effect} value={effect}>
                     {effect}
                   </MenuItem>

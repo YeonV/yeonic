@@ -1,5 +1,8 @@
 import { produce } from 'immer'
 import type { IStore } from './useStore'
+import { WledConfigInfo } from '../interfaces/WledConfigInfo'
+import { colorType } from './storeEffects'
+import { IEffectConfig } from '../effects/Effect'
 
 export interface DeviceProps {
   name: string
@@ -8,6 +11,11 @@ export interface DeviceProps {
   type: string
   ledCount: number
   order?: number
+  config?: WledConfigInfo | null
+  effect?: {
+    name: string
+    config: IEffectConfig
+  }
 }
 
 const storeDevices = (set: any) => ({
@@ -62,6 +70,95 @@ const storeDevices = (set: any) => ({
       false,
       'devices/updateDeviceByIp'
     ),
+  setDeviceEffect: (ip: string, effect: { name: string; config: any }): void =>
+    set(
+      produce((state: IStore) => {
+        const index = state.devices.devices?.findIndex((d) => d.ip === ip) || -1
+        if (index !== -1) {
+          state.devices.devices[index].effect = effect
+        }
+      }),
+      false,
+      'devices/setDeviceEffect'
+    ),
+  setDeviceEffectName: (ip: string, effect: string): void =>
+    set(
+      produce((state: IStore) => {
+        const index = state.devices.devices?.findIndex((d) => d.ip === ip) || -1
+        if (index !== -1) {
+          state.devices.devices[index].effect!.name = effect
+        }
+      }),
+      false,
+      'devices/setDeviceEffectName'
+    ),
+  setDeviceColor: (ip: string, color: colorType): void =>
+    set(
+      produce((state: IStore) => {
+        const index = state.devices.devices?.findIndex((d) => d.ip === ip) || -1
+        if (index !== -1) {
+          state.devices.devices[index].effect!.config.color = color
+        }
+      }),
+      false,
+      'devices/setDeviceColor'
+    ),
+  setDeviceBgColor: (ip: string, color: colorType): void =>
+    set(
+      produce((state: IStore) => {
+        const index = state.devices.devices?.findIndex((d) => d.ip === ip) || -1
+        if (index !== -1) {
+          state.devices.devices[index].effect!.config.bgColor = color
+        }
+      }),
+      false,
+      'devices/setDeviceBgColor'
+    ),
+  setDeviceGColor: (ip: string, gcolor: string): void =>
+    set(
+      produce((state: IStore) => {
+        const index = state.devices.devices?.findIndex((d) => d.ip === ip) || -1
+        if (index !== -1) {
+          state.devices.devices[index].effect!.config.gcolor = gcolor
+        }
+      }),
+      false,
+      'devices/setDeviceGcolor'
+    ),
+  setDeviceBandStart: (ip: string, bandStart: number): void =>
+    set(
+      produce((state: IStore) => {
+        const index = state.devices.devices?.findIndex((d) => d.ip === ip) || -1
+        if (index !== -1) {
+          state.devices.devices[index].effect!.config.bandStart = bandStart
+        }
+      }),
+      false,
+      'devices/setDeviceBandStart'
+    ),
+  setDeviceBandStop: (ip: string, bandStop: number): void =>
+    set(
+      produce((state: IStore) => {
+        const index = state.devices.devices?.findIndex((d) => d.ip === ip) || -1
+        if (index !== -1) {
+          state.devices.devices[index].effect!.config.bandStop = bandStop
+        }
+      }),
+      false,
+      'devices/setDeviceBandStop'
+    ),
+  setDeviceMinVolume: (ip: string, minVolume: number): void =>
+    set(
+      produce((state: IStore) => {
+        const index = state.devices.devices?.findIndex((d) => d.ip === ip) || -1
+        if (index !== -1) {
+          state.devices.devices[index].effect!.config.minVolume = minVolume
+        }
+      }),
+      false,
+      'devices/setDeviceMinVolume'
+    ),
+
   addOrUpdateDevice: (device: DeviceProps): void =>
     set(
       produce((state: IStore) => {

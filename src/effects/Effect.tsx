@@ -13,14 +13,14 @@ export interface IEffectConfig {
   color: { r: number; g: number; b: number }
   bgColor: { r: number; g: number; b: number }
   gcolor: string
-  activeFb: number
-  activeRightFb: number
-  volume: number
+  bandStart: number
+  bandStop: number
+  minVolume: number
   timeStarted: MutableRefObject<number | null>
   smooth: boolean
 }
 
-export const effects = [
+export const effectNames = [
   'Power (Left FB)',
   'Wavelength (Range)',
   'WavelengthBg (Range)',

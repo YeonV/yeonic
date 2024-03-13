@@ -66,7 +66,7 @@ const AudioContainer: React.FC = () => {
 
   return (
     <Stack direction='column' spacing={2} maxWidth={`min(700px, calc(95vw - ${breakSmall ? 0 : 44}px))`}>
-      <Card sx={{ overflow: 'unset', width: `min(700px, calc(95vw - ${breakSmall ? 0 : 44}px))`, margin: '2rem auto 0' }}>
+      <Card sx={{ overflow: 'unset', width: `min(700px, calc(95vw - ${breakSmall ? 0 : 44}px))`, margin: '0 auto' }}>
         <CardContent>
           <Stack direction='row' spacing={2}>
             {audioDevices?.length > 0 && (

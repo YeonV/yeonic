@@ -12,23 +12,29 @@ export const shifting = (pixel_count: number) => {
   }
 }
 
-const GradientAudioInv = ({ ampValues, pixel_count, activeFb, volume, timeStarted, gcolor }: {
+const GradientAudioInv = ({
+  ampValues,
+  pixel_count,
+  bandStart,
+  minVolume,
+  timeStarted,
+  gcolor
+}: {
   ampValues: number[]
   pixel_count: number
-  activeFb: number
-  volume: number
+  bandStart: number
+  minVolume: number
   timeStarted: MutableRefObject<number | null>
   gcolor: string
-
 }): number[] => {
   const tmp = getMultipleGradientStepsInverted(
     gcolor?.match(/rgb\([^()]*\)|#\w+/g)?.map((c) => c.match(/\d+/g)),
     pixel_count
   )
-  const audio = ampValues[activeFb] - volume * 2.55 > 0
+  const audio = ampValues[bandStart] - minVolume * 2.55 > 0
   const speed = audio ? 0 : 5
 
-  if (timeStarted.current && (performance.now() - timeStarted.current >= 16 + speed * 9.84)) {
+  if (timeStarted.current && performance.now() - timeStarted.current >= 16 + speed * 9.84) {
     shifting(pixel_count)
     timeStarted.current = performance.now()
   }

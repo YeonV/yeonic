@@ -17,23 +17,23 @@ const Power = ({
   pixel_count,
   color,
   bgColor,
-  activeFb,
-  volume,
+  bandStart,
+  minVolume,
   smooth
 }: {
   ampValues: number[]
   pixel_count: number
   color: { r: number; g: number; b: number }
   bgColor: { r: number; g: number; b: number }
-  activeFb: number
-  volume: number
+  bandStart: number
+  minVolume: number
   smooth: boolean
 }): number[] => {
   const val = smooth ? movingAverage(ampValues, 5) : ampValues
-  return activeFb > -1
+  return bandStart > -1
     ? Array(pixel_count)
         .fill([color.r, color.g, color.b])
-        .fill([bgColor.r, bgColor.g, bgColor.b], val[activeFb] - volume * 2.55 > 0 ? pixel_count * ((val[activeFb] - volume * 2.55) / 255) : 0)
+        .fill([bgColor.r, bgColor.g, bgColor.b], val[bandStart] - minVolume * 2.55 > 0 ? pixel_count * ((val[bandStart] - minVolume * 2.55) / 255) : 0)
         .flat()
     : []
 }

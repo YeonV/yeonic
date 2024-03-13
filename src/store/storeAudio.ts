@@ -47,10 +47,10 @@ const storeAudio = (set: any) => ({
       false,
       'audio/setAudioSettings'
     ),
-  setMinVolume: (volume: number): void =>
+  setMinVolume: (minVolume: number): void =>
     set(
       produce((state: IStore) => {
-        state.audio.minVolume = volume
+        state.audio.minVolume = minVolume
       }),
       false,
       'audio/setMinVolume'

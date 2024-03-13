@@ -38,7 +38,7 @@ const Dashboard = () => {
   return (
     <Box flexGrow={1} className='dashboard'>
       <div className='wrapper'>
-        <div className='col1'>          
+        <div className='col1'>
           <AudioContainer />
         </div>
 
@@ -49,7 +49,7 @@ const Dashboard = () => {
                 sx={{
                   overflow: 'unset',
                   width: breakLarge && activeService === '' ? `min(700px, calc(95vw - ${breakSmall ? 0 : 44}px))` : 'auto',
-                  margin: '2rem auto 0'
+                  margin: '0 auto'
                 }}
               >
                 <CardContent>

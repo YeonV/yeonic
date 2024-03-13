@@ -15,6 +15,7 @@ const storeEffects = (set: any) => ({
     gcolor:
       'linear-gradient(90deg, rgb(255, 0, 0) 0%, rgb(255, 120, 0) 14%, rgb(255, 200, 0) 28%, rgb(0, 255, 0) 42%, rgb(0, 199, 140) 56%, rgb(0, 0, 255) 70%, rgb(128, 0, 128) 84%, rgb(255, 0, 178) 98%)'
   },
+  selectedDevices: [] as string[],
   setEffect: (newEffect: string): void =>
     set(
       produce((state: IStore) => {
@@ -22,6 +23,26 @@ const storeEffects = (set: any) => ({
       }),
       false,
       'audio/setEffect'
+    ),
+  setSelectedDevices: (newDevices: string[]): void =>
+    set(
+      produce((state: IStore) => {
+        state.selectedDevices = newDevices
+      }),
+      false,
+      'effects/setSelectedDevices'
+    ),
+  toggleSelectedDevice: (device: string): void =>
+    set(
+      produce((state: IStore) => {
+        if (state.selectedDevices.includes(device)) {
+          state.selectedDevices = state.selectedDevices.filter((d) => d !== device)
+        } else {
+          state.selectedDevices.push(device)
+        }
+      }),
+      false,
+      'effects/toggleSelectedDevice'
     ),
   setColor: (newColor: colorType): void =>
     set(
