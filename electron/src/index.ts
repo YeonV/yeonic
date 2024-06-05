@@ -1,36 +1,52 @@
 import type { CapacitorElectronConfig } from '@capacitor-community/electron'
 // import electronReload from 'electron-reload'
-import { getCapacitorElectronConfig, setupElectronDeepLinking } from '@capacitor-community/electron'
+import {
+  getCapacitorElectronConfig,
+  setupElectronDeepLinking,
+} from '@capacitor-community/electron'
 import type { MenuItemConstructorOptions } from 'electron'
 import { app, MenuItem } from 'electron'
 import unhandled from 'electron-unhandled'
 import installExtension, { REDUX_DEVTOOLS } from 'electron-devtools-installer'
 // import { autoUpdater } from 'electron-updater'
 
-import { ElectronCapacitorApp, setupContentSecurityPolicy, setupReloadWatcher } from './setup'
+import {
+  ElectronCapacitorApp,
+  setupContentSecurityPolicy,
+  setupReloadWatcher,
+} from './setup'
 
 // Graceful handling of unhandled errors.
 unhandled()
 // electronReload(`*`,{ignored: /node_modules|[/\\]\./})
 
 // Define our menu templates (these are optional)
-const trayMenuTemplate: (MenuItemConstructorOptions | MenuItem)[] = [new MenuItem({ label: 'Quit App', role: 'quit' })]
+const trayMenuTemplate: (MenuItemConstructorOptions | MenuItem)[] = [
+  new MenuItem({ label: 'Quit App', role: 'quit' }),
+]
 const appMenuBarMenuTemplate: (MenuItemConstructorOptions | MenuItem)[] = [
   { role: process.platform === 'darwin' ? 'appMenu' : 'fileMenu' },
-  { role: 'viewMenu' }
+  { role: 'viewMenu' },
 ]
 
 // Get Config options from capacitor.config
-const capacitorFileConfig: CapacitorElectronConfig = getCapacitorElectronConfig()
+const capacitorFileConfig: CapacitorElectronConfig =
+  getCapacitorElectronConfig()
 
 // Initialize our app. You can pass menu templates into the app here.
 // const myCapacitorApp = new ElectronCapacitorApp(capacitorFileConfig);
-const myCapacitorApp = new ElectronCapacitorApp(capacitorFileConfig, trayMenuTemplate, appMenuBarMenuTemplate)
+const myCapacitorApp = new ElectronCapacitorApp(
+  capacitorFileConfig,
+  trayMenuTemplate,
+  appMenuBarMenuTemplate
+)
 
 // If deeplinking is enabled then we will set it up here.
 if (capacitorFileConfig.electron?.deepLinkingEnabled) {
   setupElectronDeepLinking(myCapacitorApp, {
-    customProtocol: capacitorFileConfig.electron.deepLinkingCustomProtocol ?? 'mycapacitorapp'
+    customProtocol:
+      capacitorFileConfig.electron.deepLinkingCustomProtocol ??
+      'mycapacitorapp',
   })
 }
 
@@ -43,9 +59,12 @@ if (!app.isPackaged) {
 (async () => {
   // Wait for electron app to be ready.
   await app.whenReady()
-  installExtension(REDUX_DEVTOOLS)
-    .then((name) => console.log(`Added Extension:  ${name}`))
-    .catch((err) => console.log('An error occurred: ', err))
+  if (!app.isPackaged) {
+    // If we are in dev mode, install the redux devtools extension.
+    installExtension(REDUX_DEVTOOLS)
+      .then((name) => console.log(`Added Extension:  ${name}`))
+      .catch((err) => console.log('An error occurred: ', err))
+  }
   // Security - Set Content-Security-Policy based on whether or not we are in dev mode.
   setupContentSecurityPolicy(myCapacitorApp.getCustomURLScheme())
   // Initialize our app, build windows, and load content.
